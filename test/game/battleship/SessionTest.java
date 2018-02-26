@@ -61,28 +61,12 @@ class SessionTest
 		assertTrue( grid.checkPlayableGridPosition( gridTarget.getVertical(), gridTarget.getHorizontal() ) );
 	}
 
-
+	// Test would be more difficult due to randomized positions
+	// Skipping implementation for now due to desire for quicker development demonstration
 //	@Test
-//	void declareWinner()
+//	void putShipPiecesOntoBoard()
 //	{
-//		Integer playableGridSize;
-//		playableGridSize = 10;
-//		Player player1 = new Player( playableGridSize, "Player1" );
-//		for( int i = player1.getGamePoints(); i > 0; i-- )
-//		{
-//			player1.decrementGamePoints();
-//		}
-//		assertEquals( 0, player1.getGamePoints() );
-//
-//
-//		Player player2 = new Player( playableGridSize, "Player2" );
-//		for( int i = player2.getGamePoints(); i > 0; i-- )
-//		{
-//			player2.decrementGamePoints();
-//		}
-//		assertEquals( 0, player2.getGamePoints() );
 //	}
-
 
 
 }

@@ -53,15 +53,20 @@ class PlayerTest
 		assertFalse( player.putShip( ship ) );
 
 
+		//=========================================================================
 		// Valid direction for length with nothing occupying the space
+		//=========================================================================
+
 		direction = "N";
 
+		// Try adding ship below minimum allowed length
 		posHoriztonal = 1;
 		posVertical = 1;
 		length = 1;
 		ship = new Ship(posVertical, posHoriztonal, length, direction);
-		assertTrue( player.putShip( ship ) );
+		assertFalse( player.putShip( ship ) );
 
+		// Try adding ships of allowed length
 		posHoriztonal = 2;
 		posVertical = 2;
 		length = 2;
@@ -89,15 +94,19 @@ class PlayerTest
 		// Clear grid by rebuilding player
 		player = new Player( boardSize, "Player" );
 
+		//=========================================================================
 		// Valid positions with reversed directions
+		//=========================================================================
 		direction = "S";
 
+		// Try adding ship below minimum allowed length
 		posHoriztonal = 1;
 		posVertical = 1;
 		length = 1;
 		ship = new Ship(posVertical, posHoriztonal, length, direction);
-		assertTrue( player.putShip( ship ) );
+		assertFalse( player.putShip( ship ) );
 
+		// Try adding ships of allowed length
 		posHoriztonal = 2;
 		posVertical = 2;
 		length = 2;
@@ -175,11 +184,11 @@ class PlayerTest
 
 
 		// COLLISION TESTING: Valid positions but collide with other boat
-		direction = "W";
+		direction = "E";
 
 		posHoriztonal = 1;
 		posVertical = 2;
-		length = 1;
+		length = 2;
 		ship = new Ship(posVertical, posHoriztonal, length, direction);
 		assertTrue( player.putShip( ship ) );
 		posHoriztonal = 2;
@@ -222,4 +231,11 @@ class PlayerTest
 
 	}
 
+//	@Test
+//	void getNumberOfShips()
+//	{
+//		Integer boardSize = 10;
+//		Player player = new Player( boardSize, "Player" );
+//		assertEquals( 4, player.getNumberOfShips() );
+//	}
 }

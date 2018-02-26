@@ -20,8 +20,6 @@ public class Ship
 	private Integer positionHorizontal;
 	private Integer positionVertical;
 
-	private ArrayList<GridCell> subsections = new ArrayList<>(); // TODO: Do we really need this?
-
 	/**
 	 *  @param positionVertical
 	 * @param positionHorizontal
@@ -34,12 +32,6 @@ public class Ship
 		this.length = length;
 		this.positionHorizontal = positionHorizontal;
 		this.positionVertical = positionVertical;
-
-		for( int i = 0; i < length; i++ )
-		{
-			GridCell section = new GridCell( contents );
-			subsections.add( section );
-		}
 	}
 
 	/**

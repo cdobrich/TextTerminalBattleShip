@@ -2,43 +2,76 @@ package game.battleship;
 
 import game.battleship.grid.Grid;
 import game.battleship.grid.GridTarget;
+import game.battleship.grid.Positions;
 import game.battleship.grid.objects.GridCell;
 import game.battleship.grid.objects.Ship;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import static java.lang.System.in;
 import static java.lang.System.out;
+import static java.lang.System.setOut;
 
 /**
  * A game session consists of two players. Whenever a player's points drops to zero, the other player wins and the game is over.
+ *
+ * Architecture comments: The Session object knows more rules, such as allowing or disallowing striking previously attacked areas.
  */
 public class Session
 {
 	Player player1, player2;
 	Integer boardSize;
-	Integer numberOfShips;
+	Integer numberOfShips, offsetNumberOfShips;
 	final Integer numberOfDirections = 4;
 	ArrayList<Player> players = new ArrayList<>();
-	
+
+	private static final Logger log = Logger.getLogger(Session.class.getName());
+
 	public Session( int boardSize )
 	{
 		this.boardSize = boardSize;
 		player1 = new Player( boardSize,"Player");
 		players.add(player1);
-		player2 = new Player( boardSize,"Opponent");
+		player2 = new Player( boardSize,"Computer");
 		players.add(player2);
 
 		// Defaulting to use the player1's numbers, but should both be the same
-		numberOfShips = player1.getNumberOfShips() - 1; // account for array indices sizing
+		numberOfShips = player1.getNumberOfShips();
+		offsetNumberOfShips = player1.getOffsetOfMyShipsList();
 	}
 
-	public void start2()
+	/**
+	 *
+	 * @param disallowStrikingPreviousMisses Flag to set whether to disallow Computer to strike previously targeted miss locations
+	 */
+	public void startComputerVsComputer( boolean disallowStrikingPreviousMisses, boolean showStepsOutput )
 	{
-		// Always start off with user as first player to go
-		Player attackingPlayer = players.get( 0 );
-		Player targetPlayer = players.get( 1 ); // Always start off the opponent as other player
+		// Random choice for which player gots first
+		int playerToGoFirstChoice = (int) ( Math.random() * 2 + 1);
+
+		Player attackingPlayer;
+		Player targetPlayer;
+		Player firstPlayer, secondPlayer;
+		if( playerToGoFirstChoice == 1 )
+		{
+			attackingPlayer = players.get( 0 );
+			targetPlayer = players.get( 1 ); // Always start off the opponent as other player
+		}
+		else
+		{
+			attackingPlayer = players.get( 1 );
+			targetPlayer = players.get( 0 ); // Always start off the opponent as other player
+		}
+		firstPlayer = attackingPlayer;
+		secondPlayer = targetPlayer;
+
 
 		// Populate the board pieces
 		putShipPiecesOntoBoard( attackingPlayer );
@@ -51,40 +84,61 @@ public class Session
 			// Get a random location
 			GridTarget randomTarget = generateRandomTargetPosition();
 
-			// Examine the target player's grid at that target GridCell location
-//			out.println(attackingPlayer.getLabel() + " attacks the " + targetPlayer.getLabel() + " at " + randomTarget);
+			if( disallowStrikingPreviousMisses && attackingPlayer.getLabel().contentEquals( "Computer" ) ) // prevent computer from hitting previous selection
+			{
+				while(true)
+				{
+					GridCell targetStrike = targetPlayer.getGridCell( randomTarget.getVertical(), randomTarget.getHorizontal() );
+
+					if( targetStrike.isHit() ) // Check if already hit.
+					{
+						// This spot has been hit before so do not break the loop and allow it to generate another target
+						randomTarget = generateRandomTargetPosition();
+					}
+					else
+					{
+						break; // Have not hit this one before so it may be used
+					}
+				}
+			}
+
 
 			GridCell targetStrike = targetPlayer.getGridCell( randomTarget.getVertical(), randomTarget.getHorizontal() );
 			if( targetStrike.isHit() ) // Check if already hit.
 			{
 				// Already hit. Do nothing.
-				// They are allowed to hit this multiple times if they choose.
 			}
 			else
 			{
 				GridCell targetCell;
-				if( targetStrike.isOccupied() )
+				if( targetStrike.isOccupied() ) // HIT
 				{ // Note on their grid there was a hit
 					targetCell = new GridCell(" X ");
-					targetCell.setHit( true );
-//					out.println( "  HIT!!" );
-					// update other player's points
-					targetPlayer.decrementGamePoints();
+					targetPlayer.decrementGamePoints(); // update other player's points
+					if( showStepsOutput )
+					{
+						out.println( attackingPlayer.getLabel() + " hit on target '" + Positions.translateHorizontalNumberPositionToLetterLabel( randomTarget.getHorizontal() ) + randomTarget.getVertical() + "'" );
+					}
 				}
-				else
+				else // MISS
 				{
 					targetCell = new GridCell(" . ");
+					if( showStepsOutput )
+					{
+						out.println( attackingPlayer.getLabel() + " miss on target '" + Positions.translateHorizontalNumberPositionToLetterLabel( randomTarget.getHorizontal() ) + randomTarget.getVertical() + "'" );
+					}
 				}
-				Grid grid = targetPlayer.getGrid(); // adjust otherPlayer's grid
+				targetCell.setHit( true );
+				Grid grid = targetPlayer.getGrid(); // adjust target's grid
 				grid.setGridCell( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
-				targetPlayer.setGrid( grid ); // Update the player grid
+				targetPlayer.setGrid( grid ); // Update the target grid
 			}
+			attackingPlayer.incrementTurns();
 
 			// check whether there is a victor
 			if( !gameRunning() )
 			{
 				gameIsRunning = false; // end the game
-//				break; // Leave this current inner loop
 			}
 
 			// Swap the players
@@ -93,101 +147,183 @@ public class Session
 			targetPlayer = tempPlayer;
 		}
 
-//		displayBothPlayerGrids( attackingPlayer.getLabel(), targetPlayer.getLabel() );
-		displayBothPlayerGrids( player1.getLabel(), player2.getLabel() );
+		displayBothPlayerGrids( firstPlayer.getLabel(), secondPlayer.getLabel() );
 		Player winner = players.get( declareWinner() );
+		out.println("'" + firstPlayer.getLabel() + "' went first." );
 		out.println(winner.getLabel()+" is the winner!");
-		out.println("Winner points remaining: " + winner.getGamePoints());
+		out.println("  Winner points remaining: " + winner.getGamePoints());
+		if( showStepsOutput )
+		{
+			out.println( player1.getLabel() + " took " + player1.getTurns() + " turns." );
+			out.println( player2.getLabel() + " took " + player2.getTurns() + " turns." );
+		}
 
 	}
 
-
-
-
-	public void start()
+	/**
+	 *
+	 * @param disallowStrikingPreviousMisses Flag to set whether to disallow Computer to strike previously targeted miss locations
+	 */
+	public void startPlayerVsComputer( boolean disallowStrikingPreviousMisses, boolean showStepsOutput )
 	{
-		putShipPiecesOntoBoard(player1);
-		putShipPiecesOntoBoard(player2);
-		displayBothPlayerGrids( player1.getLabel(), player2.getLabel() );
+		Player humanPlayer;
+		Player computerPlayer;
+		humanPlayer = players.get( 0 );
+		computerPlayer = players.get( 1 ); // Always start off the opponent as other player
 
-		// Play!
+		if( showStepsOutput )
+		{
+			out.println( "In Player vs Computer mode, the player always goes first." );
+		}
+
+		// Populate the board pieces
+		putShipPiecesOntoBoard( humanPlayer );
+		putShipPiecesOntoBoard( computerPlayer );
+		displayBothPlayerGrids( humanPlayer.getLabel(), computerPlayer.getLabel() );
+
 		boolean gameIsRunning = true;
-		Integer playerNumber = 0;
-		Player otherPlayer = players.get(1); // Always start off the opponent as other player
-
 		while( gameIsRunning )
 		{
-			while( playerNumber >= 0 && playerNumber < 2 ) // Go through each player
+			//=======================================================================
+			// Human Player section, targets human Computer's grid
+			//=======================================================================
+
+			// Ask user for input on location
+			System.out.println();
+			System.out.print( "  Enter target (example A1, D4, J9): " );
+			try
 			{
-				Player currentPlayer = players.get(playerNumber);
-				// toggle between the two players
-				// This is obviously a little limited but for the simple demo we will stick with only two players
-				if( playerNumber == 0 )
+				BufferedReader is = new BufferedReader( new InputStreamReader( System.in ) );
+				String inputline = is.readLine();
+
+				// Simple regex splitting, putting the answer in the first index of each String array
+				String[] posVerticalArray = inputline.substring( 1 ).split( "[a-jA-J]" );
+				String[] posHorizontalArray = inputline.split( "[1-9]+" );
+
+				GridTarget manualTarget = new GridTarget( new Integer( posVerticalArray[0] ), new Integer( posHorizontalArray[0] ) );
+				System.out.println( "Targeting " + manualTarget );
+
+				GridCell manualStrike = computerPlayer.getGridCell( manualTarget.getVertical(), manualTarget.getHorizontal() );
+
+				if( manualStrike.isHit() ) // Check if already hit.
 				{
-					playerNumber = 1;
+					// Already hit. Do nothing. User is allowed to hit something already targeted.
 				}
 				else
 				{
-					playerNumber = 0;
-				}
-
-				// Get a random location
-				GridTarget randomTarget = generateRandomTargetPosition();
-
-				// Ask the target player what his grid has at that GridCell location
-//				out.println(currentPlayer.getLabel() + " attacks " + randomTarget);
-
-
-				GridCell target = otherPlayer.getGridCell( randomTarget.getVertical(), randomTarget.getHorizontal() );
-				if( target.isHit() )
-				{
-					// Already hit. Do nothing.
-					// They are allowed to hit this multiple times if they choose.
-				}
-				else
-				{
-					Grid grid = otherPlayer.getGrid();
-					if( target.isOccupied() )
+					GridCell targetCell;
+					if( manualStrike.isOccupied() ) // HIT
+					{ // Note on their grid there was a hit
+						targetCell = new GridCell( " X " );
+						computerPlayer.decrementGamePoints(); // update other player's points
+						if( showStepsOutput )
+						{
+							out.println( humanPlayer.getLabel() + " hit on target '" + Positions.translateHorizontalNumberPositionToLetterLabel( manualTarget.getHorizontal() ) + manualTarget.getVertical() + "'" );
+						}
+					}
+					else // MISS
 					{
-//					out.println( "  HIT!" );
+						targetCell = new GridCell( " . " );
+						if( showStepsOutput )
+						{
+							out.println( humanPlayer.getLabel() + " miss on target '" + Positions.translateHorizontalNumberPositionToLetterLabel( manualTarget.getHorizontal() ) + manualTarget.getVertical() + "'" );
+						}
+					}
+					targetCell.setHit( true );
+					Grid grid = computerPlayer.getGrid(); // adjust target's grid
+					grid.setGridCell( targetCell, manualTarget.getVertical(), manualTarget.getHorizontal() );
+					computerPlayer.setGrid( grid ); // Update the target grid
 
-						GridCell targetCell = new GridCell(" X ");
-//						targetCell.setOccupied( true );
-						targetCell.setHit( true );
-						grid.setGridCell( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
+					// Check the gridTarget
+					// Adjust points and statuses
+				}
+				humanPlayer.incrementTurns();
+			}
+			catch( IOException e )
+			{
+				e.printStackTrace();
+			}
 
-						// update other player's points
-						otherPlayer.decrementGamePoints();
+			//=======================================================================
+			// Computer Player section, targets human Player's grid
+			//=======================================================================
 
-						// switch to using for loop, and use the i++ or i-- to toggle the other players values?
-						// Or key a previousPlayer variable? Do we want to make a pair of opponents?
+			// Get a random location
+			GridTarget randomTarget = generateRandomTargetPosition();
+
+			if( disallowStrikingPreviousMisses ) // prevent computer from hitting previous selection
+			{
+				while(true)
+				{
+					GridCell targetStrike = humanPlayer.getGridCell( randomTarget.getVertical(), randomTarget.getHorizontal() );
+
+					if( targetStrike.isHit() ) // Check if already hit.
+					{
+						// This spot has been hit before so do not break the loop and allow it to generate another target
+						randomTarget = generateRandomTargetPosition();
 					}
 					else
-					{ // Note on their grid there was a miss
-//					out.println( "  MISS!" );
-
-						grid.setGridCell(new GridCell(" . "), randomTarget.getVertical(), randomTarget.getHorizontal());
+					{
+						break; // Have not hit this one before so it may be used
 					}
-					otherPlayer.setGrid( grid ); // Update the player grid
 				}
+			}
 
-				// check whether there is a victor
-				if( ! gameRunning() )
-				{
-					gameIsRunning = false; // end the game
-					break; // Leave this current inner loop
+			GridCell targetStrike = humanPlayer.getGridCell( randomTarget.getVertical(), randomTarget.getHorizontal() );
+			if( targetStrike.isHit() ) // Check if already hit.
+			{
+				// Already hit. Do nothing.
+			}
+			else
+			{
+				GridCell targetCell;
+				if( targetStrike.isOccupied() ) // HIT
+				{ // Note on their grid there was a hit
+					targetCell = new GridCell(" X ");
+					humanPlayer.decrementGamePoints(); // update other player's points
+					if( showStepsOutput )
+					{
+						out.println( computerPlayer.getLabel() + " hit on target '" + Positions.translateHorizontalNumberPositionToLetterLabel( randomTarget.getHorizontal() ) + randomTarget.getVertical() + "'" );
+					}
 				}
-				otherPlayer = currentPlayer; // Set other player for next round to the current player
-				currentPlayer = players.get(playerNumber); // Set to next player
+				else // MISS
+				{
+					targetCell = new GridCell(" . ");
+					if( showStepsOutput )
+					{
+						out.println( computerPlayer.getLabel() + " miss on target '" + Positions.translateHorizontalNumberPositionToLetterLabel( randomTarget.getHorizontal() ) + randomTarget.getVertical() + "'" );
+					}
+				}
+				targetCell.setHit( true );
+				Grid grid = humanPlayer.getGrid(); // adjust target's grid
+				grid.setGridCell( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
+				humanPlayer.setGrid( grid ); // Update the target grid
+			}
+			computerPlayer.incrementTurns();
+
+			//=======================================================================
+			// Update scores and statuses
+			//=======================================================================
+
+			// check whether there is a victor
+			if( !gameRunning() )
+			{
+				gameIsRunning = false; // end the game
 			}
 		}
 
-		displayBothPlayerGrids( player1.getLabel(), player2.getLabel() );
+		displayBothPlayerGrids( humanPlayer.getLabel(), computerPlayer.getLabel() );
 		Player winner = players.get( declareWinner() );
-		out.println(winner.getLabel() + " is the winner!");
-		out.println("Winner points remaining: " + winner.getGamePoints());
+		out.println(winner.getLabel()+" is the winner!");
+		out.println("  Winner points remaining: " + winner.getGamePoints());
+		if( showStepsOutput )
+		{
+			out.println( player1.getLabel() + " took " + player1.getTurns() + " turns." );
+			out.println( player2.getLabel() + " took " + player2.getTurns() + " turns." );
+		}
 
 	}
+
 
 	/**
 	 * @return the number index of player (in the list of players) who won with more points than zero. Or return -1 if there is no victor yet.
@@ -253,11 +389,14 @@ public class Session
 		return true;
 	}
 
-	private void putShipPiecesOntoBoard( Player player )
+	public void putShipPiecesOntoBoard( Player player )
 	{
 		// We never need to reach zero since we store the ships corresponding to their length value, not memory location value
 		// Start off with biggest first because it's probably easier to put the smaller ships secondarily
-		for( int i = numberOfShips; i > 0; i-- )
+
+		// Subtract one on starting integer to avoid zero-based array indices out of bounds errors
+		// Loop limiter set to greater-than-or-equals to allow for reaching values again due on zero-based array indices
+		for( int i = numberOfShips - 1; i >= offsetNumberOfShips; i-- )
 		{
 			Ship ship = generateShipAtRandomPosition(i);
 
@@ -315,13 +454,12 @@ public class Session
 	public GridTarget generateRandomTargetPosition( )
 	{
 		// Generate random number between zero and board size
-		// Generate a pseudo-random, uniformly distributed int value between 0 (inclusive) and the specified value (exclusive)"
+		// Generate a pseudo-random, uniformly distributed int value between 0 (inclusive) and the specified value (exclusive)
 		Random rn = new Random();
 
-		// Note we are not including the +1 for these because we are translating back to 0-based grid locations for targets
-		// This avoids an array index out of bounds error
-		Integer vertical = rn.nextInt(boardSize + 1);
-		Integer horizontal = rn.nextInt(boardSize + 1);
+		// Always add +1 OUTISDE the randomization call to avoid the trouble with including zero in the generation
+		Integer vertical = rn.nextInt(boardSize) + 1;
+		Integer horizontal = rn.nextInt(boardSize) + 1;
 		return new GridTarget(vertical, horizontal);
 	}
 

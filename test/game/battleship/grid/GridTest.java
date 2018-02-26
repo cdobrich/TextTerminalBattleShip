@@ -345,12 +345,6 @@ class GridTest
 
 		direction = "N";
 
-		posHoriztonal = 1;
-		posVertical = 1;
-		length = 1;
-		ship = new Ship(posVertical, posHoriztonal, length, direction);
-		assertTrue( player.putShip( ship ) );
-
 		posHoriztonal = 2;
 		posVertical = 2;
 		length = 2;
@@ -381,7 +375,7 @@ class GridTest
 			"+-------------------------------------------+\n" +
 			"|   | A | B | C | D | E | F | G | H | I | J |\n" +
 			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"| 1 | @ | @ | @ | @ | @ |   |   |   |   |   |\n" +
+			"| 1 |   | @ | @ | @ | @ |   |   |   |   |   |\n" +
 			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
 			"| 2 |   | @ | @ | @ | @ |   |   |   |   |   |\n" +
 			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
@@ -417,7 +411,6 @@ class GridTest
 
 
 		actual = player.displayGridString();
-		System.out.println(actual);
 		expected =
 			"+-------------------------------------------+\n" +
 			"|   | A | B | C | D | E | F | G | H | I | J |\n" +

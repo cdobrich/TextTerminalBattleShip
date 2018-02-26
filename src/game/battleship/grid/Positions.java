@@ -52,15 +52,4 @@ public class Positions
 		return 0;
 	}
 
-	public static Integer reverseTranslateGridNumbersToMemoryGrid( Integer position )
-	{
-		return position + REVERSE_COORDINATE_TRANSLATION;
-	}
-
-
-	public static Integer translateGridNumbersToMemoryGrid( Integer position )
-	{
-		return position + COORDINATE_TRANSLATION;
-	}
-
 }
