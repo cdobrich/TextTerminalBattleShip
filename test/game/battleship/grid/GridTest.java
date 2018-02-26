@@ -494,7 +494,7 @@ class GridTest
 
 
 	@Test
-	void setGridCell1()
+	void setGridCell()
 	{
 		Integer playableGridSize = 10;
 		Grid grid;
@@ -516,7 +516,7 @@ class GridTest
 	}
 
 	@Test
-	void setAndGetGridCell1()
+	void setAndGetGridCell()
 	{
 		Integer playableGridSize = 10;
 		int posHoriztonal = 1;
