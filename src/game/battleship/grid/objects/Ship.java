@@ -23,13 +23,12 @@ public class Ship
 	private ArrayList<GridCell> subsections = new ArrayList<>(); // TODO: Do we really need this?
 
 	/**
-	 *
-	 * @param positionVertical
+	 *  @param positionVertical
 	 * @param positionHorizontal
 	 * @param length
 	 * @param direction
 	 */
-	public Ship( Integer positionVertical, Integer positionHorizontal, Integer length, String direction )
+	public Ship( int positionVertical, int positionHorizontal, int length, String direction )
 	{
 		this.direction = direction;
 		this.length = length;
@@ -50,7 +49,7 @@ public class Ship
 	 * @param length
 	 * @param direction
 	 */
-	public Ship( Integer positionVertical, Character positionHorizontal, Integer length, String direction )
+	public Ship( int positionVertical, Character positionHorizontal, int length, String direction )
 	{
 		this( positionVertical, Positions.translateLetterToHorizontal(positionHorizontal), length, direction);
 	}

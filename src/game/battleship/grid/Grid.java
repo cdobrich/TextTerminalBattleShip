@@ -88,14 +88,15 @@ public class Grid
 
 		String direction = ship.getDirection();
 
-		// Check all positions are okay before adding ship
+		// Check all positions the length of the ship could occupied are okay
+		// Also check if the location is already occupied by another ship
 		for( int i = 0; i < ship.getLength(); i++ )
 		{
 			if( direction.contentEquals( "N" ) )
 			{
 				// subtracting in the y-coords
 //				out.println( "Checking " + positionHorizontal + "," + (positionVertical - i) );
-				if( !checkPlayableGridPosition( positionVertical - i, positionHorizontal ) )
+				if( ! checkPlayableGridPosition( positionVertical - i, positionHorizontal ) )
 				{
 					acceptablePosition = false;
 					break;
@@ -132,6 +133,7 @@ public class Grid
 				}
 			}
 		}
+
 
 		if( acceptablePosition )
 		{
@@ -182,7 +184,7 @@ public class Grid
 		if( checkPlayableGridSingleCoordinate( posHorizontal ) &&	checkPlayableGridSingleCoordinate( posVertical ) )
 		{
 			// Check for no pre-existing item at coords
-			GridCell targetGridCell = getGridCell( posHorizontal, posVertical );
+			GridCell targetGridCell = getGridCell( posVertical, posHorizontal );
 			if( targetGridCell.isOccupied() )
 			{
 //			out.println( "Position [" Positions.translateHorizontalNumberPositionToLetterLabel(posHorizontal) + posVertical + "]: Space is already occupied" );
@@ -245,7 +247,7 @@ public class Grid
 		out.println( printGridEdge() );
 
 		int rowLabel = 1;
-		for( int i = 0; i < getPlayableGrid()*2; i++ ) // the playableGrid is multiplied by 2 in order to account for the game.battleship.grid row lines
+		for( int i = 1; i <= getPlayableGrid()*2; i++ ) // the playableGrid is multiplied by 2 in order to account for the game.battleship.grid row lines
 		{
 			if( markerLine ) // Printing game.battleship.grid separator lines
 			{ // Print contents as game.battleship.grid line markers
@@ -266,7 +268,7 @@ public class Grid
 				rowLabel++;
 
 				// Print cell contents
-				for( int j = 0; j < getPlayableGrid(); j++ )
+				for( int j = 1; j <= getPlayableGrid(); j++ )
 				{
 					// remember to divide the 'i' variable by 2 because we multipled it by 2 in the outer loop
 					out.print( printCell( grid[i / 2][j].toString() ) );
@@ -306,7 +308,7 @@ public class Grid
 		display += System.getProperty("line.separator");
 
 		int rowLabel = 1;
-		for( int i = 0; i < getPlayableGrid()*2; i++ ) // the playableGrid is multiplied by 2 in order to account for the game.battleship.grid row lines
+		for( int i = 1; i <= getPlayableGrid()*2; i++ ) // the playableGrid is multiplied by 2 in order to account for the game.battleship.grid row lines
 		{
 			if( markerLine ) // Printing game.battleship.grid separator lines
 			{ // Print contents as game.battleship.grid line markers
@@ -317,21 +319,23 @@ public class Grid
 			else // Printing game.battleship.grid contents lines
 			{
 				// Print vertical labels
-				if( rowLabel < 10 )
+				if( rowLabel < 10 ) // Account for needing a leading space before the single digit output
 				{
 					display += ( printCell( (" " + rowLabel + " ") ) );
 				}
-				else
+				else // Do not place a leading space before digit output
 				{
 					display += ( printCell( (rowLabel + " ") ) );
 				}
 				rowLabel++;
 
 				// Print cell contents
-				for( int j = 0; j < getPlayableGrid(); j++ )
+				for( int j = 1; j <= getPlayableGrid(); j++ )
 				{
 					// remember to divide the 'i' variable by 2 because we multipled it by 2 in the outer loop
-					display += ( printCell( grid[i / 2][j].toString() ) );
+
+					int half = i / 2;
+					display += ( printCell( grid[half][j].toString() ) );
 				}
 				display += ( printGridEdge() );
 				display += System.getProperty("line.separator");
@@ -368,10 +372,11 @@ public class Grid
 	 * @param posVertical
 	 * @return
 	 */
-	public GridCell getGridCell( int posHorizontal, int posVertical )
+	public GridCell getGridCell( int posVertical, int posHorizontal )
 	{
 //		return grid[ Positions.translateGridNumbersToMemoryGrid( posHorizontal ) ][ Positions.translateGridNumbersToMemoryGrid( posVertical ) ];
-		return grid[posHorizontal][posVertical];
+		return grid[posVertical][posHorizontal];
+//		return grid[posHorizontal][posVertical];
 	}
 
 	private static String printGridEdge()
@@ -410,15 +415,22 @@ public class Grid
 	}
 
 	/**
-	 *
 	 * @param gridItem
 	 * @param posVertical
 	 * @param posHorizontal
 	 */
-	public void setGridCell( GridCell gridItem, Integer posVertical, Integer posHorizontal )
+	public boolean setGridCell( GridCell gridItem, int posVertical, int posHorizontal )
 	{
+		if( checkPlayableGridSingleCoordinate( posVertical ) && checkPlayableGridSingleCoordinate(posHorizontal ) )
+		{
 //		this.grid[ Positions.translateGridNumbersToMemoryGrid( posHorizontal ) ][ Positions.translateGridNumbersToMemoryGrid( posVertical ) ] = gridItem;
-		this.grid[posHorizontal][posVertical] = gridItem;
+			this.grid[posHorizontal][posVertical] = gridItem;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 

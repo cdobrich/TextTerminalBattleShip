@@ -30,7 +30,6 @@ public class GridTarget
 	 * Display output is translated, but value stored in memory is not.
 	 */
 	public String toString() {
-		System.out.println("translated from " + horizontal);
 		return " " + Positions.translateHorizontalNumberPositionToLetterLabel(horizontal) + vertical;
 	}
 }

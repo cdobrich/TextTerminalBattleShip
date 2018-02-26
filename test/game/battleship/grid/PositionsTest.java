@@ -11,51 +11,51 @@ class PositionsTest
 	void translateHorizontalNumberPositionToLetterLabel()
 	{
 		Integer positionHorizontal;
-		Character result;
+		Character actual;
 
 		positionHorizontal = 0;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( ' ' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( ' ' ) );
 
 		positionHorizontal = 1;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( 'A' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( 'A' ) );
 
 		positionHorizontal = 2;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( 'B' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( 'B' ) );
 
 		positionHorizontal = 3;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( 'C' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( 'C' ) );
 
 		positionHorizontal = 4;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( 'D' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( 'D' ) );
 
 		positionHorizontal = 5;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( 'E' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( 'E' ) );
 
 		positionHorizontal = 6;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( 'F' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( 'F' ) );
 
 		positionHorizontal = 7;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( 'G' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( 'G' ) );
 
 		positionHorizontal = 8;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( 'H' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( 'H' ) );
 
 		positionHorizontal = 9;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( 'I' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( 'I' ) );
 
 		positionHorizontal = 10;
-		result = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
-		assertEquals( 0, result.compareTo( 'J' ) );
+		actual = Positions.translateHorizontalNumberPositionToLetterLabel(positionHorizontal);
+		assertEquals( 0, actual.compareTo( 'J' ) );
 
 	}
 

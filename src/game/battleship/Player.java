@@ -67,7 +67,7 @@ public class Player
 		return grid.displayGridString();
 	}
 
-	public Integer getGamePoints()
+	public int getGamePoints()
 	{
 		return gamePoints;
 	}
@@ -80,7 +80,7 @@ public class Player
 		return grid;
 	}
 
-	public GridCell getGridCell( Integer vertical, Integer horizontal )
+	public GridCell getGridCell( int vertical, int horizontal )
 	{
 		return grid.getGridCell( horizontal, vertical );
 	}
@@ -127,10 +127,6 @@ public class Player
 
 	public void setGrid(Grid grid) {
 		this.grid = grid;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
 	}
 
 }

@@ -2,7 +2,6 @@ package game.battleship;
 
 import game.battleship.grid.Grid;
 import game.battleship.grid.GridTarget;
-import game.battleship.grid.Positions;
 import game.battleship.grid.objects.GridCell;
 import game.battleship.grid.objects.Ship;
 
@@ -260,29 +259,33 @@ public class Session
 		// Start off with biggest first because it's probably easier to put the smaller ships secondarily
 		for( int i = numberOfShips; i > 0; i-- )
 		{
-
 			Ship ship = generateShipAtRandomPosition(i);
-
 
 			if( player.putShip( ship ) )
 			{
-//				out.println( "Ship placed!" );
-					out.println( "Placing ship at " + Positions.translateHorizontalNumberPositionToLetterLabel( ship.getPositionHorizontal() ) +
-						ship.getPositionVertical() + ", length " + ship.getLength() + ", direction " + ship.getDirection());
+//					out.println( player.getLabel() + " puts ship at " + Positions.translateHorizontalNumberPositionToLetterLabel( ship.getPositionHorizontal() ) +
+//						ship.getPositionVertical() + ", length " + ship.getLength() + ", direction " + ship.getDirection());
+//					player.displayGrid();
 			}
 			else
 			{
 //				out.println( "Ship position not valid. Vert:" + ship.getPositionHorizontal() + " Hor: " + ship.getPositionVertical() + " Len: " + ship.getLength() + " Dir: " + ship.getDirection());
-				i++;
+				i++; // step the loop back and try again
 			}
 		}
 	}
 
-	private Ship generateShipAtRandomPosition( int length )
+
+	/**
+	 *
+	 * @param length A parameter merely passed along in the ship construction process. Not used in the position generations.
+	 * @return
+	 */
+	public Ship generateShipAtRandomPosition( int length )
 	{
 		// Generate random number between zero and board size
-
 		// Generate a pseudorandom, uniformly distributed int value between 0 (inclusive) and the specified value (exclusive)"
+
 		Random rn = new Random();
 		Integer vertical = rn.nextInt(boardSize) + 1;
 		Integer horizontal = rn.nextInt(boardSize) + 1;
@@ -309,7 +312,7 @@ public class Session
 		return new Ship(vertical, horizontal, length, direction);
 	}
 
-	private GridTarget generateRandomTargetPosition( )
+	public GridTarget generateRandomTargetPosition( )
 	{
 		// Generate random number between zero and board size
 		// Generate a pseudo-random, uniformly distributed int value between 0 (inclusive) and the specified value (exclusive)"
@@ -317,8 +320,8 @@ public class Session
 
 		// Note we are not including the +1 for these because we are translating back to 0-based grid locations for targets
 		// This avoids an array index out of bounds error
-		Integer vertical = rn.nextInt(boardSize);
-		Integer horizontal = rn.nextInt(boardSize);
+		Integer vertical = rn.nextInt(boardSize + 1);
+		Integer horizontal = rn.nextInt(boardSize + 1);
 		return new GridTarget(vertical, horizontal);
 	}
 
