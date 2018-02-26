@@ -33,7 +33,7 @@ public class Main
 //		session.startPlayerVsComputer( true, true, true );
 
 			Session session = new Session(boardSize);
-			session.startComputerVsComputer( true, false );
+			session.startComputerVsComputer( true, true );
 
 //		try
 //		{

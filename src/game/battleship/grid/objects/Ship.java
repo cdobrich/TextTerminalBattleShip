@@ -1,13 +1,14 @@
 package game.battleship.grid.objects;
 
 import game.battleship.grid.Positions;
-import java.util.ArrayList;
 
 /**
  * Architecture Design comment(s):
  *
  * Ships do not know about the grid, only about themselves and their positions.
- * They leave the grid to determine if their position is vaid for play.
+ * Determination of valid positioning is left to the Grid object.
+ * Determination of valid sizes for the ship (between 2 and 5) are left to the Player. You can create a ship of any size greater than zero.
+ *
  *
  * Acceptable direction values are N, S, E, W, which help determine the layout of the ship on the game.battleship.grid.
  *
@@ -71,4 +72,15 @@ public class Ship
 		return positionVertical;
 	}
 
+	@Override
+	public String toString()
+	{
+		return "Ship{ " +
+			"contents='" + contents + '\'' +
+			", dir.='" + direction + '\'' +
+			", length=" + length +
+			", location Horz=" + positionHorizontal +
+			", Vert=" + positionVertical +
+			" }";
+	}
 }

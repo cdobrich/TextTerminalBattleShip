@@ -145,7 +145,7 @@ class GridTest
 
 		// Test with below  minimum allowed size, which should default to grid size 10.
 		playableGridSize = 2;
-		player = new Player( playableGridSize, "Player" );
+		player = new Player( playableGridSize, "Player" ); // Clear the board
 
 		actual = player.displayGridString();
 		expected =
@@ -209,7 +209,7 @@ class GridTest
 
 		// Test maximum board size
 		playableGridSize = 26;
-		player = new Player( playableGridSize, "Player" );
+		player = new Player( playableGridSize, "Player" ); // Clear the board
 
 		actual = player.displayGridString();
 		expected = "+-----------------------------------------------------------------------------------------------------------+\n" +
@@ -272,7 +272,7 @@ class GridTest
 
 		// Test maximum board size
 		playableGridSize = 48;
-		player = new Player( playableGridSize, "Player" );
+		player = new Player( playableGridSize, "Player" ); // Clear the board
 
 		actual = player.displayGridString();
 		expected = "+-----------------------------------------------------------------------------------------------------------+\n" +
@@ -343,6 +343,92 @@ class GridTest
 		String direction;
 
 
+
+		// ========================================================================
+
+		player = new Player( playableGridSize, "Player" ); // Clear the board
+
+		direction = "S";
+
+		posHoriztonal = Positions.translateLetterToHorizontal( 'C' );
+		posVertical = 3;
+		length = 5;
+		ship = new Ship(posVertical, posHoriztonal, length, direction);
+		assertTrue( player.putShip( ship ) );
+
+
+		actual = player.displayGridString();
+		expected =
+			"+-------------------------------------------+\n" +
+				"|   | A | B | C | D | E | F | G | H | I | J |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 1 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 2 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 3 |   |   | @ |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 4 |   |   | @ |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 5 |   |   | @ |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 6 |   |   | @ |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 7 |   |   | @ |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 8 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 9 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"|10 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"+-------------------------------------------+\n";
+		assertEquals( expected, actual );
+
+		// ========================================================================
+
+		player = new Player( playableGridSize, "Player" ); // Clear the board
+
+		direction = "E";
+
+		posHoriztonal = Positions.translateLetterToHorizontal( 'C' );
+		posVertical = 3;
+		length = 5;
+		ship = new Ship(posVertical, posHoriztonal, length, direction);
+		assertTrue( player.putShip( ship ) );
+
+
+		actual = player.displayGridString();
+		expected =
+			"+-------------------------------------------+\n" +
+				"|   | A | B | C | D | E | F | G | H | I | J |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 1 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 2 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 3 |   |   | @ | @ | @ | @ | @ |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 4 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 5 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 6 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 7 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 8 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"| 9 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"|---|---|---|---|---|---|---|---|---|---|---|\n" +
+				"|10 |   |   |   |   |   |   |   |   |   |   |\n" +
+				"+-------------------------------------------+\n";
+		assertEquals( expected, actual );
+
+
+		// ========================================================================
+
+		player = new Player( playableGridSize, "Player" ); // Clear the board
+
 		direction = "N";
 
 		posHoriztonal = 2;
@@ -351,11 +437,15 @@ class GridTest
 		ship = new Ship(posVertical, posHoriztonal, length, direction);
 		assertTrue( player.putShip( ship ) );
 
+		System.out.println(player.displayGridString());
+
 		posHoriztonal = 3;
 		posVertical = 3;
 		length = 3;
 		ship = new Ship(posVertical, posHoriztonal, length, direction);
 		assertTrue( player.putShip( ship ) );
+
+		System.out.println(player.displayGridString());
 
 		posHoriztonal = 4;
 		posVertical = 4;
@@ -397,46 +487,6 @@ class GridTest
 			"+-------------------------------------------+\n";
 		assertEquals( expected, actual );
 
-		// ========================================================================
-
-		player = new Player( playableGridSize, "Player" );
-
-		direction = "S";
-
-		posHoriztonal = Positions.translateLetterToHorizontal( 'C' );
-		posVertical = 3;
-		length = 5;
-		ship = new Ship(posVertical, posHoriztonal, length, direction);
-		assertTrue( player.putShip( ship ) );
-
-
-		actual = player.displayGridString();
-		expected =
-			"+-------------------------------------------+\n" +
-			"|   | A | B | C | D | E | F | G | H | I | J |\n" +
-			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"| 1 |   |   |   |   |   |   |   |   |   |   |\n" +
-			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"| 2 |   |   |   |   |   |   |   |   |   |   |\n" +
-			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"| 3 |   |   | @ |   |   |   |   |   |   |   |\n" +
-			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"| 4 |   |   | @ |   |   |   |   |   |   |   |\n" +
-			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"| 5 |   |   | @ |   |   |   |   |   |   |   |\n" +
-			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"| 6 |   |   | @ |   |   |   |   |   |   |   |\n" +
-			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"| 7 |   |   | @ |   |   |   |   |   |   |   |\n" +
-			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"| 8 |   |   |   |   |   |   |   |   |   |   |\n" +
-			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"| 9 |   |   |   |   |   |   |   |   |   |   |\n" +
-			"|---|---|---|---|---|---|---|---|---|---|---|\n" +
-			"|10 |   |   |   |   |   |   |   |   |   |   |\n" +
-			"+-------------------------------------------+\n";
-		assertEquals( expected, actual );
-
 	}
 
 
@@ -449,20 +499,23 @@ class GridTest
 		Ship ship;
 		String expected = "   ";
 
+		//=========================================================================
+		// Get GridCells with Heads of Ships
+		//=========================================================================
 
-		// Test on a new blank grid
+		// Test on a new blank grid with default "   " everywhere
 		grid = new Grid( playableGridSize ); // rebuild the board grid
 
 		// Far upper left position of the board
-		actual =  grid.getGridCell( 1,1 );
+		actual = grid.getGridCell( 1,1 );
 		assertEquals( expected, actual.getContents() );
 
 		// Little bit inward position of the board
-		actual =  grid.getGridCell( 2,2 );
+		actual = grid.getGridCell( 2,2 );
 		assertEquals( expected, actual.getContents() );
 
 		// Far lower right position of the board
-		actual =  grid.getGridCell( playableGridSize, playableGridSize );
+		actual = grid.getGridCell( playableGridSize, playableGridSize );
 		assertEquals( expected, actual.getContents() );
 
 
@@ -473,22 +526,126 @@ class GridTest
 		// Far upper left position of the board
 		grid = new Grid( playableGridSize ); // rebuild the board grid
 		ship = new Ship(1, 1, 1, "N" );
-		grid.addShip( ship );
-		actual =  grid.getGridCell( 1, 1 );
+		assertTrue( grid.addShip( ship ) );
+
+		System.out.println("Placed " + ship);
+		System.out.println( grid.displayGridString() );
+
+		actual = grid.getGridCell( 1, 1 );
 		assertEquals( ship.getContents(), actual.getContents() );
 
 		grid = new Grid( playableGridSize ); // rebuild the board grid
 		ship = new Ship(1, 1, 5, "S" );
-		grid.addShip( ship );
-		actual =  grid.getGridCell( 1, 1 );
+		assertTrue( grid.addShip( ship ) );
+		actual = grid.getGridCell( 1, 1 );
 		assertEquals( ship.getContents(), actual.getContents() );
 
 		// Far lower right position of the board
 		grid = new Grid( playableGridSize ); // rebuild the board grid
 		ship = new Ship(playableGridSize, playableGridSize, 5, "N" );
-		grid.addShip( ship );
-		actual =  grid.getGridCell( playableGridSize, playableGridSize );
+		assertTrue( grid.addShip( ship ) );
+		actual = grid.getGridCell( playableGridSize, playableGridSize );
 		assertEquals( ship.getContents(), actual.getContents() );
+
+
+		//=========================================================================
+		// Get GridCells with Portions of Ships
+		//=========================================================================
+
+		grid = new Grid( playableGridSize ); // rebuild the board grid
+
+		/*
+		Ship is like this:
+			1
+		1 @
+		2 @
+		3 @
+		4 @
+		5 @
+
+		 */
+		ship = new Ship(1, 1, 5, "S" );
+		assertTrue( grid.addShip( ship ) );
+
+		// Valid positions beyond the head of the ship
+
+		actual = grid.getGridCell( 2, 1 );
+		assertEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 3, 1 );
+		assertEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 4, 1 );
+		assertEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 5, 1 );
+		assertEquals( ship.getContents(), actual.getContents() );
+
+
+		// Invalid positions beyond the head of the ship
+
+		actual = grid.getGridCell( 2, 2 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 3, 3 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 4, 3 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 5, 4 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 1, 2 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 1, 3 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 1, 3 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 1, 4 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+
+	/*
+		Ship is like this:
+			1 2 3 4 5 6
+		1
+		2   @ @ @
+		3
+		4
+		5
+
+		 */
+		ship = new Ship(3, 2, 3, "E" );
+		assertTrue( grid.addShip( ship ) );
+
+		// Valid positions beyond the head of the ship
+
+		actual = grid.getGridCell( 3, 2 );
+		assertEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 3, 3 );
+		assertEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 3, 4 );
+		assertEquals( ship.getContents(), actual.getContents() );
+
+		// Invalid positions beyond the head of the ship
+
+		actual = grid.getGridCell( 1, 2 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 2, 2 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 4, 3 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
+
+		actual = grid.getGridCell( 5, 2 );
+		assertNotEquals( ship.getContents(), actual.getContents() );
 
 	}
 
@@ -511,6 +668,7 @@ class GridTest
 		assertFalse( grid.setGridCell( result, 0, 1 ) );
 		assertFalse( grid.setGridCell( result, 1, 0 ) );
 		assertTrue( grid.setGridCell( result, 1, 1 ) );
+		assertTrue( grid.setGridCell( result, 2, 2 ) );
 		assertTrue( grid.setGridCell( result, playableGridSize, playableGridSize ) );
 		assertFalse( grid.setGridCell( result, playableGridSize, playableGridSize + 1 ) );
 	}

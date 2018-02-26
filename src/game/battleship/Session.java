@@ -58,17 +58,10 @@ public class Session
 
 		Player attackingPlayer;
 		Player targetPlayer;
+		attackingPlayer = players.get( 0 );
+		targetPlayer = players.get( 1 ); // Always start off the opponent as other player
+
 		Player firstPlayer, secondPlayer;
-		if( playerToGoFirstChoice == 1 )
-		{
-			attackingPlayer = players.get( 0 );
-			targetPlayer = players.get( 1 ); // Always start off the opponent as other player
-		}
-		else
-		{
-			attackingPlayer = players.get( 1 );
-			targetPlayer = players.get( 0 ); // Always start off the opponent as other player
-		}
 		firstPlayer = attackingPlayer;
 		secondPlayer = targetPlayer;
 
@@ -238,7 +231,7 @@ public class Session
 					targetCell.setHit( true );
 					Grid grid = computerPlayer.getGrid(); // adjust target's grid
 //					grid.setGridCell( targetCell, manualTarget.getHorizontal(), manualTarget.getVertical() );
-					grid.setGridCellAlternative( targetCell, manualTarget.getVertical(), manualTarget.getHorizontal() );
+					grid.setGridCell( targetCell, manualTarget.getVertical(), manualTarget.getHorizontal() );
 
 					computerPlayer.setGrid( grid ); // Update the target grid
 				}
@@ -301,7 +294,7 @@ public class Session
 				}
 				targetCell.setHit( true );
 				Grid grid = humanPlayer.getGrid(); // adjust target's grid
-				grid.setGridCellAlternative( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
+				grid.setGridCell( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
 				humanPlayer.setGrid( grid ); // Update the target grid
 			}
 			computerPlayer.incrementTurns();
@@ -374,13 +367,15 @@ public class Session
 			out.println( output );
 		}
 
-		out.print( "    " + label1 );
+		String board = "board";
 
-		for( int i = 0; i < s1Lines[0].length() - 1; i++ ) // Using the board display string length
+		out.print( "    " + label1 + " " + board);
+
+		for( int i = 0; i < s1Lines[0].length() - board.length() - 1; i++ ) // Using the board display string length
 		{
 			out.print( " " );
 		}
-		out.println( label2 );
+		out.println( label2 + " " + board);
 	}
 
 	/**

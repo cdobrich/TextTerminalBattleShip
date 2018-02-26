@@ -143,23 +143,26 @@ public class Grid
 				if( direction.contentEquals( "N" ))
 				{
 					// subtracting in the vertical-coords
-					setGridCell(targetGridCell, positionHorizontal, positionVertical - i );
+//					out.println( "Setting " + Positions.translateHorizontalNumberPositionToLetterLabel( positionHorizontal ) + "," + (positionVertical - i) );
+					setGridCell(targetGridCell, positionVertical - i, positionHorizontal );
 				}
 				else if( direction.contentEquals( "S" ) )
 				{
 					// adding in the vertical-coords
-//					out.println( "Setting " + positionHorizontal + "," + (positionVertical + i) );
-					setGridCell(targetGridCell, positionHorizontal, positionVertical + i );
+//					out.println( "Setting " + Positions.translateHorizontalNumberPositionToLetterLabel( positionHorizontal ) + "," + (positionVertical + i) );
+					setGridCell(targetGridCell, positionVertical + i, positionHorizontal );
 				}
 				else if( direction.contentEquals( "E" ) )
 				{
 					// adding in the horizontal-coords
-					setGridCell(targetGridCell, positionHorizontal + i, positionVertical );
+//					out.println( "Setting " + Positions.translateHorizontalNumberPositionToLetterLabel( positionHorizontal + i) + "," + (positionVertical));
+					setGridCell(targetGridCell, positionVertical, positionHorizontal + i );
 				}
 				else if( direction.contentEquals( "W" ) )
 				{
 					// subtracting in the horizontal-coords
-					setGridCell(targetGridCell, positionHorizontal - i, positionVertical );
+//					out.println( "Setting " + Positions.translateHorizontalNumberPositionToLetterLabel( positionHorizontal - i ) + "," + (positionVertical) );
+					setGridCell(targetGridCell, positionVertical, positionHorizontal - i);
 				}
 			}
 		}
@@ -370,7 +373,6 @@ public class Grid
 	 */
 	public GridCell getGridCell( int posVertical, int posHorizontal )
 	{
-//		return grid[posHorizontal][posVertical];
 		return grid[posVertical][posHorizontal];
 	}
 
@@ -423,7 +425,7 @@ public class Grid
 	{
 		if( checkPlayableGridSingleCoordinate( posVertical ) && checkPlayableGridSingleCoordinate(posHorizontal ) )
 		{
-			this.grid[posHorizontal][posVertical] = gridItem;
+			grid[posVertical][posHorizontal] = gridItem;
 			return true;
 		}
 		else
@@ -431,20 +433,6 @@ public class Grid
 			return false;
 		}
 	}
-
-	public boolean setGridCellAlternative( GridCell gridItem, int posVertical, int posHorizontal )
-	{
-		if( checkPlayableGridSingleCoordinate( posVertical ) && checkPlayableGridSingleCoordinate(posHorizontal ) )
-		{
-			this.grid[posVertical][posHorizontal] = gridItem;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
 
 }
 
