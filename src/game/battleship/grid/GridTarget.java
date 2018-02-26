@@ -1,3 +1,4 @@
+
 package game.battleship.grid;
 
 /**
@@ -25,7 +26,11 @@ public class GridTarget
 	}
 
 	@Override
+	/**
+	 * Display output is translated, but value stored in memory is not.
+	 */
 	public String toString() {
-		return " " + Positions.translateHorizontalToLetterLabel(horizontal) + vertical;
+		System.out.println("translated from " + horizontal);
+		return " " + Positions.translateHorizontalNumberPositionToLetterLabel(horizontal) + vertical;
 	}
 }

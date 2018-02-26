@@ -30,9 +30,9 @@ public class Positions
 		return horizontalLabels;
 	}
 
-	public static Character translateHorizontalToLetterLabel( Integer positionHorizontal)
+	public static Character translateHorizontalNumberPositionToLetterLabel( Integer positionHorizontal )
 	{
-		return horizontalLabels[(positionHorizontal + REVERSE_COORDINATE_TRANSLATION)];
+		return horizontalLabels[positionHorizontal];
 	}
 
 	/**
@@ -51,4 +51,16 @@ public class Positions
 		}
 		return 0;
 	}
+
+	public static Integer reverseTranslateGridNumbersToMemoryGrid( Integer position )
+	{
+		return position + REVERSE_COORDINATE_TRANSLATION;
+	}
+
+
+	public static Integer translateGridNumbersToMemoryGrid( Integer position )
+	{
+		return position + COORDINATE_TRANSLATION;
+	}
+
 }

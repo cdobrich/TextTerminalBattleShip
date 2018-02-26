@@ -2,6 +2,7 @@ package game.battleship;
 
 import game.battleship.grid.Grid;
 import game.battleship.grid.GridTarget;
+import game.battleship.grid.Positions;
 import game.battleship.grid.objects.GridCell;
 import game.battleship.grid.objects.Ship;
 
@@ -16,10 +17,6 @@ import static java.lang.System.out;
  */
 public class Session
 {
-	// Write a random ship placement function
-	// For the computer opponent, use the random ship placement function
-	// After each attempted strike, calculate both sides points to check if there is a winner
-
 	Player player1, player2;
 	Integer boardSize;
 	Integer numberOfShips;
@@ -38,6 +35,76 @@ public class Session
 		numberOfShips = player1.getNumberOfShips() - 1; // account for array indices sizing
 	}
 
+	public void start2()
+	{
+		// Always start off with user as first player to go
+		Player attackingPlayer = players.get( 0 );
+		Player targetPlayer = players.get( 1 ); // Always start off the opponent as other player
+
+		// Populate the board pieces
+		putShipPiecesOntoBoard( attackingPlayer );
+		putShipPiecesOntoBoard( targetPlayer );
+		displayBothPlayerGrids( attackingPlayer.getLabel(), targetPlayer.getLabel() );
+
+		boolean gameIsRunning = true;
+		while( gameIsRunning )
+		{
+			// Get a random location
+			GridTarget randomTarget = generateRandomTargetPosition();
+
+			// Examine the target player's grid at that target GridCell location
+//			out.println(attackingPlayer.getLabel() + " attacks the " + targetPlayer.getLabel() + " at " + randomTarget);
+
+			GridCell targetStrike = targetPlayer.getGridCell( randomTarget.getVertical(), randomTarget.getHorizontal() );
+			if( targetStrike.isHit() ) // Check if already hit.
+			{
+				// Already hit. Do nothing.
+				// They are allowed to hit this multiple times if they choose.
+			}
+			else
+			{
+				GridCell targetCell;
+				if( targetStrike.isOccupied() )
+				{ // Note on their grid there was a hit
+					targetCell = new GridCell(" X ");
+					targetCell.setHit( true );
+//					out.println( "  HIT!!" );
+					// update other player's points
+					targetPlayer.decrementGamePoints();
+				}
+				else
+				{
+					targetCell = new GridCell(" . ");
+				}
+				Grid grid = targetPlayer.getGrid(); // adjust otherPlayer's grid
+				grid.setGridCell( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
+				targetPlayer.setGrid( grid ); // Update the player grid
+			}
+
+			// check whether there is a victor
+			if( !gameRunning() )
+			{
+				gameIsRunning = false; // end the game
+//				break; // Leave this current inner loop
+			}
+
+			// Swap the players
+			Player tempPlayer = attackingPlayer;
+			attackingPlayer = targetPlayer;
+			targetPlayer = tempPlayer;
+		}
+
+//		displayBothPlayerGrids( attackingPlayer.getLabel(), targetPlayer.getLabel() );
+		displayBothPlayerGrids( player1.getLabel(), player2.getLabel() );
+		Player winner = players.get( declareWinner() );
+		out.println(winner.getLabel()+" is the winner!");
+		out.println("Winner points remaining: " + winner.getGamePoints());
+
+	}
+
+
+
+
 	public void start()
 	{
 		putShipPiecesOntoBoard(player1);
@@ -46,7 +113,7 @@ public class Session
 
 		// Play!
 		boolean gameIsRunning = true;
-		Integer playerNumber = 0; // Always start off with user as first player to go
+		Integer playerNumber = 0;
 		Player otherPlayer = players.get(1); // Always start off the opponent as other player
 
 		while( gameIsRunning )
@@ -72,35 +139,41 @@ public class Session
 //				out.println(currentPlayer.getLabel() + " attacks " + randomTarget);
 
 
-				GridCell target = currentPlayer.getGridCell( randomTarget.getVertical(), randomTarget.getHorizontal() );
-				Grid grid = currentPlayer.getGrid();
-				if( target.isOccupied() )
-				{ // Note on their grid there was a hit
-//					out.println( "  HIT!" );
-
-					GridCell targetCell = new GridCell(" X ");
-					targetCell.setOccupied(false);
-					grid.setGridCell( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
-
-					// update other player's points
-					currentPlayer.decrementGamePoints();
-
-					// switch to using for loop, and use the i++ or i-- to toggle the other players values?
-					// Or key a previousPlayer variable? Do we want to make a pair of opponents?
+				GridCell target = otherPlayer.getGridCell( randomTarget.getVertical(), randomTarget.getHorizontal() );
+				if( target.isHit() )
+				{
+					// Already hit. Do nothing.
+					// They are allowed to hit this multiple times if they choose.
 				}
 				else
-				{ // Note on their grid there was a miss
+				{
+					Grid grid = otherPlayer.getGrid();
+					if( target.isOccupied() )
+					{
+//					out.println( "  HIT!" );
+
+						GridCell targetCell = new GridCell(" X ");
+//						targetCell.setOccupied( true );
+						targetCell.setHit( true );
+						grid.setGridCell( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
+
+						// update other player's points
+						otherPlayer.decrementGamePoints();
+
+						// switch to using for loop, and use the i++ or i-- to toggle the other players values?
+						// Or key a previousPlayer variable? Do we want to make a pair of opponents?
+					}
+					else
+					{ // Note on their grid there was a miss
 //					out.println( "  MISS!" );
 
-					if( ! target.getContents().contentEquals(" X ") ) // Retain the X mark of the destroyed ship segments
-					{
 						grid.setGridCell(new GridCell(" . "), randomTarget.getVertical(), randomTarget.getHorizontal());
 					}
+					otherPlayer.setGrid( grid ); // Update the player grid
 				}
-				currentPlayer.setGrid( grid ); // Update the player grid
 
 				// check whether there is a victor
-				if( ! gameStatus() )
+				if( ! gameRunning() )
 				{
 					gameIsRunning = false; // end the game
 					break; // Leave this current inner loop
@@ -122,7 +195,7 @@ public class Session
 	 */
 	public Integer declareWinner()
 	{
-		if( ! gameStatus() ) // Is the game over
+		if( ! gameRunning() ) // Is the game over
 		{
 			for (int i = 0; i < players.size(); i++)
 			{
@@ -167,7 +240,7 @@ public class Session
 	/**
 	 * @return true if game is still running. False if game is over.
 	 */
-	public boolean gameStatus()
+	public boolean gameRunning()
 	{
 		Iterator<Player> playersIterator = players.iterator();
 		while( playersIterator.hasNext() ) // Go through each player
@@ -189,9 +262,13 @@ public class Session
 		{
 
 			Ship ship = generateShipAtRandomPosition(i);
+
+
 			if( player.putShip( ship ) )
 			{
 //				out.println( "Ship placed!" );
+					out.println( "Placing ship at " + Positions.translateHorizontalNumberPositionToLetterLabel( ship.getPositionHorizontal() ) +
+						ship.getPositionVertical() + ", length " + ship.getLength() + ", direction " + ship.getDirection());
 			}
 			else
 			{
@@ -235,7 +312,7 @@ public class Session
 	private GridTarget generateRandomTargetPosition( )
 	{
 		// Generate random number between zero and board size
-		// Generate a pseudorandom, uniformly distributed int value between 0 (inclusive) and the specified value (exclusive)"
+		// Generate a pseudo-random, uniformly distributed int value between 0 (inclusive) and the specified value (exclusive)"
 		Random rn = new Random();
 
 		// Note we are not including the +1 for these because we are translating back to 0-based grid locations for targets

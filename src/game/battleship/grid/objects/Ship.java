@@ -3,18 +3,27 @@ package game.battleship.grid.objects;
 import game.battleship.grid.Positions;
 import java.util.ArrayList;
 
+/**
+ * Architecture Design comment(s):
+ *
+ * Ships do not know about the grid, only about themselves and their positions.
+ * They leave the grid to determine if their position is vaid for play.
+ *
+ * Acceptable direction values are N, S, E, W, which help determine the layout of the ship on the game.battleship.grid.
+ *
+ */
 public class Ship
 {
 	private String contents = " @ "; //
-	private String direction; // Acceptable values are N, S, E, W, which help determine the layout of the ship on the game.battleship.grid
+	private String direction; //
 	private Integer length;
 	private Integer positionHorizontal;
 	private Integer positionVertical;
-	private Integer nonDamagedSections;
 
-	private ArrayList<GridCell> subsections = new ArrayList<>();;
+	private ArrayList<GridCell> subsections = new ArrayList<>(); // TODO: Do we really need this?
 
 	/**
+	 *
 	 * @param positionVertical
 	 * @param positionHorizontal
 	 * @param length
@@ -24,7 +33,6 @@ public class Ship
 	{
 		this.direction = direction;
 		this.length = length;
-		nonDamagedSections = length; // Initially everything is not damaged
 		this.positionHorizontal = positionHorizontal;
 		this.positionVertical = positionVertical;
 
@@ -44,7 +52,7 @@ public class Ship
 	 */
 	public Ship( Integer positionVertical, Character positionHorizontal, Integer length, String direction )
 	{
-		this(positionVertical, Positions.translateLetterToHorizontal(positionHorizontal), length, direction);
+		this( positionVertical, Positions.translateLetterToHorizontal(positionHorizontal), length, direction);
 	}
 
 	public String getContents()

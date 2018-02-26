@@ -5,38 +5,58 @@ import game.battleship.grid.objects.Ship;
 
 import static java.lang.System.out;
 
+/**
+ * The actual grid size in memory is 0 to gridSize inclusively. However the playable board dimensions are from 1 to playableGrid inclusively.
+ *
+ * Note: There are some errors if you make the grid size below
+ */
+
 public class Grid
 {
+
 	private GridCell[][] grid;
 	final char[] horizontalLabels = Positions.getHorizontalLabels();
-	private Integer gridsize = 0;
+	private Integer playableGrid = 0; // Playable area of grid
+	private Integer gridSizeInMemory = 0; // Actual area size of the grid in memory
 
 	// This allows players to choose more natural number values for human players, like A1 instead of A0.
 	private final Integer COORDINATE_TRANSLATION = Positions.getCoordinateTranslationConstant();
 	private final Integer REVERSE_COORDINATE_TRANSLATION = Positions.getReverseCoordinateTranslationConstant();
 
-	public Grid( Integer gridsize )
+	/**
+	 * Initialize the playable grid within memory, populated with blank gridcells, and set related class size variables.
+	 * If problems are encountered with unusual size grid specifications, method defaults to size 10x10.
+	 * @param playableGrid The playable square area of the grid for the game.
+	 */
+	public Grid( Integer playableGrid )
 	{
-		if( gridsize <= 0 )
+		if( playableGrid <= 0 )
 		{
 			out.println( "Grid size must be a positive number. Defaulting to size 10." );
-			this.gridsize = 10;
+			this.playableGrid = 10;
 		}
-		else if( gridsize > 26 && gridsize > 0 )
+		else if( playableGrid > 26 && playableGrid > 0 )
 		{
-			this.gridsize = 26;
+			this.playableGrid = 26;
 			out.println( "Maximum allowed game.battleship.grid size is 26." );
+		}
+		else if( playableGrid < 10 )
+		{
+			out.println( "Minimum grid size is 10. Defaulting to size 10." );
+			this.playableGrid = 10;
 		}
 		else
 		{
-			this.gridsize = gridsize;
+			this.playableGrid = playableGrid;
 		}
+		this.gridSizeInMemory = this.playableGrid + 1; // Setup the actual memory grid size area
 
 		// initialize the array(s) because Java does not by default fill them out
-		grid = new GridCell[gridsize][gridsize];
-		for( int i = 0; i < getGridsize(); i++ )
+		// fill out all the columns, including the unplayable row and column zero.
+		grid = new GridCell[gridSizeInMemory][gridSizeInMemory];
+		for( int i = 0; i < getGridSizeInMemory(); i++ )
 		{
-			for( int j = 0; j < getGridsize(); j++ )
+			for( int j = 0; j < getGridSizeInMemory(); j++ )
 			{
 				grid[i][j] = new GridCell( );
 			}
@@ -46,6 +66,7 @@ public class Grid
 
 	/**
 	 * Tries to add ship to the game.battleship.grid. Succeeds if the ship's full length is within the game.battleship.grid boundary coordinates and does not conflict with any other ship objects.
+	 * The Ship's coordinates are translated from Grid layout into memory zero-based layout.
 	 *
 	 * @param ship A ship with length, contents, position (vertical-horizontal coordinates), and direction defined.
 	 * @return true if successfully added the ship. false if not.
@@ -53,16 +74,17 @@ public class Grid
 	public boolean addShip(Ship ship)
 	{
 		boolean acceptablePosition = true;
-		Integer positionHorizontal = ship.getPositionHorizontal() + COORDINATE_TRANSLATION;
-		Integer positionVertical = ship.getPositionVertical() + COORDINATE_TRANSLATION;
+		Integer positionHorizontal = ship.getPositionHorizontal();
+		Integer positionVertical = ship.getPositionVertical();
 
-		if( positionHorizontal < 0 || positionVertical < 0 )
+		if( ! checkPlayableGridSingleCoordinate(positionHorizontal ) || ! checkPlayableGridSingleCoordinate( positionVertical ) )
 		{
-			out.println( "Acceptable row values are from 1 to " + gridsize + "." );
+			out.println( "Acceptable row values are from 1 to " + playableGrid + "." );
 			out.println( "Row values like A0, B0, C0, etc. are invalid." );
 			out.println( "Minimal possible values are A1, B1, C1, etc...." );
 			return false;
 		}
+
 
 		String direction = ship.getDirection();
 
@@ -73,7 +95,7 @@ public class Grid
 			{
 				// subtracting in the y-coords
 //				out.println( "Checking " + positionHorizontal + "," + (positionVertical - i) );
-				if( !checkGridPosition( positionVertical - i, positionHorizontal ) )
+				if( !checkPlayableGridPosition( positionVertical - i, positionHorizontal ) )
 				{
 					acceptablePosition = false;
 					break;
@@ -83,7 +105,7 @@ public class Grid
 			{
 				// adding in the y-coords
 //				out.println( "Checking " + positionHorizontal + "," + (positionVertical + i) );
-				if( ! checkGridPosition( positionVertical + i, positionHorizontal ) )
+				if( ! checkPlayableGridPosition( positionVertical + i, positionHorizontal ) )
 				{
 					acceptablePosition = false;
 					break;
@@ -93,7 +115,7 @@ public class Grid
 			{
 				// adding in the x-coords
 //				out.println( "Checking " + (positionHorizontal+i) + "," + positionVertical );
-				if( ! checkGridPosition( positionVertical, positionHorizontal + i ) )
+				if( ! checkPlayableGridPosition( positionVertical, positionHorizontal + i ) )
 				{
 					acceptablePosition = false;
 					break;
@@ -103,7 +125,7 @@ public class Grid
 			{
 				// subtracting in the x-coords
 //				out.println( "Checking " + (positionHorizontal-i) + "," + positionVertical );
-				if( ! checkGridPosition( positionVertical, positionHorizontal - i ) )
+				if( ! checkPlayableGridPosition( positionVertical, positionHorizontal - i ) )
 				{
 					acceptablePosition = false;
 					break;
@@ -148,37 +170,56 @@ public class Grid
 	}
 
 	/**
-	 * Checking if game.battleship.grid position is acceptable, meaning within boundaries and not occupied by a ship section already.
+	 * Checking if actual coordinate position is acceptable, meaning within boundaries and not occupied by a ship section already.
 	 *
 	 * @return true if acceptable, false if not.
+	 * @param posVertical
+	 * @param posHorizontal
 	 */
-	private boolean checkGridPosition( Integer posVertical, Integer posHorizontal )
+	public boolean checkPlayableGridPosition( int posVertical, int posHorizontal )
 	{
 		// Horizontal-coord within bounds
-		if( ! ( posHorizontal >= 0 && posHorizontal < getGridsize() ) )
+		if( checkPlayableGridSingleCoordinate( posHorizontal ) &&	checkPlayableGridSingleCoordinate( posVertical ) )
 		{
-//			out.println( "Horizontal position NOT OK" );
+			// Check for no pre-existing item at coords
+			GridCell targetGridCell = getGridCell( posHorizontal, posVertical );
+			if( targetGridCell.isOccupied() )
+			{
+//			out.println( "Position [" Positions.translateHorizontalNumberPositionToLetterLabel(posHorizontal) + posVertical + "]: Space is already occupied" );
+				return false;
+			}
+			else
+			{
+				// Everything seems okay
+				return true;
+			}
+		}
+		else
+		{
+			// Either or both coordinates are incorrect
 			return false;
 		}
-
-		// Vertical-coord within bounds
-		if( ! (posVertical >= 0 && posVertical < getGridsize() ) )
-		{
-//			out.println( "Vertical position NOT OK" );
-			return false;
-		}
-
-		// Check for no pre-existing item at coords
-		GridCell targetGridCell = getGridCell( posVertical, posHorizontal );
-		if( targetGridCell.isOccupied() )
-		{
-//			out.println( "Position [" + Positions.translateHorizontalToLetterLabel(posHorizontal) + (posVertical + REVERSE_COORDINATE_TRANSLATION) + "]: Space is already occupied" );
-			return false;
-		}
-
-		// Everything seems okay
-		return true;
 	}
+
+	/**
+	 * Evalutes whether a single input position is allowed within the playable grid area, ranging from 1 to the GridSize, inclusively.
+	 * Note this does not check if the space is occupied.
+	 *
+	 * @param position Single dimensional poosition being checked, such a 1 or 5 or 10.
+	 * @return true if position is allowed, false if not.
+	 */
+	public boolean checkPlayableGridSingleCoordinate( int position )
+	{
+		if(position > 0 && position <= getPlayableGrid())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 
 	/**
 	 * Display the board game.battleship.grid, including ships, empty spaces, misses, and hits.
@@ -194,21 +235,21 @@ public class Grid
 		boolean markerLine = true;
 
 		// Print top row (including length for blank game.battleship.grid starting spacer cell)
-		out.println( printWholeRow( gridsize + 1) ); // only at start and end
+		out.println( printWholeRow( playableGrid + 1) ); // only at start and end
 
 		// Print top labels + game.battleship.grid edge
-		for( int letter = 0; letter < getGridsize() + 1; letter++ )
+		for( int letter = 0; letter < getPlayableGrid() + 1; letter++ )
 		{
 			out.print( printCell( (" " + horizontalLabels[letter] + " ") ) );
 		}
 		out.println( printGridEdge() );
 
 		int rowLabel = 1;
-		for( int i = 0; i < getGridsize()*2; i++ ) // the gridsize is multiplied by 2 in order to account for the game.battleship.grid row lines
+		for( int i = 0; i < getPlayableGrid()*2; i++ ) // the playableGrid is multiplied by 2 in order to account for the game.battleship.grid row lines
 		{
 			if( markerLine ) // Printing game.battleship.grid separator lines
 			{ // Print contents as game.battleship.grid line markers
-				out.print( printLineSeparatorRow( getGridsize() + 1, gridLineMarkers ) );
+				out.print( printLineSeparatorRow( getPlayableGrid() + 1, gridLineMarkers ) );
 				out.println( printGridEdge() );
 			}
 			else // Printing game.battleship.grid contents lines
@@ -225,7 +266,7 @@ public class Grid
 				rowLabel++;
 
 				// Print cell contents
-				for( int j = 0; j < getGridsize(); j++ )
+				for( int j = 0; j < getPlayableGrid(); j++ )
 				{
 					// remember to divide the 'i' variable by 2 because we multipled it by 2 in the outer loop
 					out.print( printCell( grid[i / 2][j].toString() ) );
@@ -235,7 +276,7 @@ public class Grid
 
 			markerLine = !markerLine; // toggle
 		}
-		out.println( printWholeRow( gridsize + 1) );
+		out.println( printWholeRow( playableGrid + 1) );
 	}
 
 	/**
@@ -253,11 +294,11 @@ public class Grid
 		boolean markerLine = true;
 
 		// Print top row (including length for blank game.battleship.grid starting spacer cell)
-		display += printWholeRow( gridsize + 1); // only at start and end
+		display += printWholeRow( playableGrid + 1); // only at start and end
 		display += System.getProperty("line.separator");
 
 		// Print top labels + game.battleship.grid edge
-		for( int letter = 0; letter < getGridsize() + 1; letter++ )
+		for( int letter = 0; letter < getPlayableGrid() + 1; letter++ )
 		{
 			display += ( printCell( (" " + horizontalLabels[letter] + " ") ) );
 		}
@@ -265,11 +306,11 @@ public class Grid
 		display += System.getProperty("line.separator");
 
 		int rowLabel = 1;
-		for( int i = 0; i < getGridsize()*2; i++ ) // the gridsize is multiplied by 2 in order to account for the game.battleship.grid row lines
+		for( int i = 0; i < getPlayableGrid()*2; i++ ) // the playableGrid is multiplied by 2 in order to account for the game.battleship.grid row lines
 		{
 			if( markerLine ) // Printing game.battleship.grid separator lines
 			{ // Print contents as game.battleship.grid line markers
-				display += ( printLineSeparatorRow( getGridsize() + 1, gridLineMarkers ) );
+				display += ( printLineSeparatorRow( getPlayableGrid() + 1, gridLineMarkers ) );
 				display += ( printGridEdge() );
 				display += System.getProperty("line.separator");
 			}
@@ -287,7 +328,7 @@ public class Grid
 				rowLabel++;
 
 				// Print cell contents
-				for( int j = 0; j < getGridsize(); j++ )
+				for( int j = 0; j < getPlayableGrid(); j++ )
 				{
 					// remember to divide the 'i' variable by 2 because we multipled it by 2 in the outer loop
 					display += ( printCell( grid[i / 2][j].toString() ) );
@@ -298,20 +339,39 @@ public class Grid
 
 			markerLine = !markerLine; // toggle
 		}
-		display += ( printWholeRow( gridsize + 1) );
+		display += ( printWholeRow( playableGrid + 1) );
 		display += System.getProperty("line.separator");
 
 		return display;
 	}
 
-	public Integer getGridsize()
+	/**
+	 * Get the playable grid board dimensions, which are from 1 to playableGrid inclusively.
+	 */
+	public Integer getPlayableGrid()
 	{
-		return gridsize;
+		return playableGrid;
 	}
 
-	public GridCell getGridCell( Integer posVertical, Integer posHorizontal )
+	/**
+	 * Get actual grid dimensions in memory, which are from 0 to gridSize inclusively.
+	 */
+	public Integer getGridSizeInMemory()
 	{
-		return grid[posVertical][posHorizontal];
+		return gridSizeInMemory;
+	}
+
+	/**
+	 * Note there is no position enforcement checking, so you can definitely go out of bounds.
+	 *
+	 * @param posHorizontal
+	 * @param posVertical
+	 * @return
+	 */
+	public GridCell getGridCell( int posHorizontal, int posVertical )
+	{
+//		return grid[ Positions.translateGridNumbersToMemoryGrid( posHorizontal ) ][ Positions.translateGridNumbersToMemoryGrid( posVertical ) ];
+		return grid[posHorizontal][posVertical];
 	}
 
 	private static String printGridEdge()
@@ -357,6 +417,7 @@ public class Grid
 	 */
 	public void setGridCell( GridCell gridItem, Integer posVertical, Integer posHorizontal )
 	{
+//		this.grid[ Positions.translateGridNumbersToMemoryGrid( posHorizontal ) ][ Positions.translateGridNumbersToMemoryGrid( posVertical ) ] = gridItem;
 		this.grid[posHorizontal][posVertical] = gridItem;
 	}
 

@@ -7,6 +7,7 @@ public class GridCell
 {
 	private String contents;
 	boolean occupied = false;
+	boolean hit = false;
 
 	public GridCell( )
 	{
@@ -23,15 +24,16 @@ public class GridCell
 		return contents;
 	}
 
-	public boolean isOccupied()
-	{
-		return occupied;
-	}
+	public boolean isHit() { return hit; }
+
+	public boolean isOccupied() {	return occupied; }
 
 	public void setContents( String contents )
 	{
 		this.contents = contents;
 	}
+
+	public void setHit( boolean hit ) {	this.hit = hit; }
 
 	public void setOccupied( boolean occupied )
 	{

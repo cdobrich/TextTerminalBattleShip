@@ -82,7 +82,7 @@ public class Player
 
 	public GridCell getGridCell( Integer vertical, Integer horizontal )
 	{
-		return grid.getGridCell( vertical, horizontal );
+		return grid.getGridCell( horizontal, vertical );
 	}
 
 	/**
