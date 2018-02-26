@@ -12,12 +12,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import static java.lang.System.in;
 import static java.lang.System.out;
-import static java.lang.System.setOut;
 
 /**
  * A game session consists of two players. Whenever a player's points drops to zero, the other player wins and the game is over.
@@ -31,8 +27,6 @@ public class Session
 	Integer numberOfShips, offsetNumberOfShips;
 	final Integer numberOfDirections = 4;
 	ArrayList<Player> players = new ArrayList<>();
-
-	private static final Logger log = Logger.getLogger(Session.class.getName());
 
 	public Session( int boardSize )
 	{
@@ -53,9 +47,6 @@ public class Session
 	 */
 	public void startComputerVsComputer( boolean disallowStrikingPreviousMisses, boolean showStepsOutput )
 	{
-		// Random choice for which player gots first
-		int playerToGoFirstChoice = (int) ( Math.random() * 2 + 1);
-
 		Player attackingPlayer;
 		Player targetPlayer;
 		attackingPlayer = players.get( 0 );
