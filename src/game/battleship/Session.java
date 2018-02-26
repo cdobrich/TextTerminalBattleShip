@@ -164,7 +164,7 @@ public class Session
 	 *
 	 * @param disallowStrikingPreviousMisses Flag to set whether to disallow Computer to strike previously targeted miss locations
 	 */
-	public void startPlayerVsComputer( boolean disallowStrikingPreviousMisses, boolean showStepsOutput )
+	public void startPlayerVsComputer( boolean disallowStrikingPreviousMisses, boolean showStepsOutput, boolean showGridEachRound )
 	{
 		Player humanPlayer;
 		Player computerPlayer;
@@ -198,10 +198,16 @@ public class Session
 
 				// Simple regex splitting, putting the answer in the first index of each String array
 				String[] posVerticalArray = inputline.substring( 1 ).split( "[a-jA-J]" );
-				String[] posHorizontalArray = inputline.split( "[1-9]+" );
+				String[] posHorizontalLetterInputArray = inputline.split( "[1-9]+" );
 
-				GridTarget manualTarget = new GridTarget( new Integer( posVerticalArray[0] ), new Integer( posHorizontalArray[0] ) );
-				System.out.println( "Targeting " + manualTarget );
+				Character inputLetter = new Character( posHorizontalLetterInputArray[0].charAt( 0 ) );
+
+				inputLetter = inputLetter.toUpperCase(inputLetter);
+
+				Integer posHorizontal = Positions.translateLetterToHorizontal( inputLetter );
+
+				GridTarget manualTarget = new GridTarget( new Integer( posVerticalArray[0] ), posHorizontal );
+				out.println( "Targeting" + manualTarget );
 
 				GridCell manualStrike = computerPlayer.getGridCell( manualTarget.getVertical(), manualTarget.getHorizontal() );
 
@@ -218,7 +224,7 @@ public class Session
 						computerPlayer.decrementGamePoints(); // update other player's points
 						if( showStepsOutput )
 						{
-							out.println( humanPlayer.getLabel() + " hit on target '" + Positions.translateHorizontalNumberPositionToLetterLabel( manualTarget.getHorizontal() ) + manualTarget.getVertical() + "'" );
+							out.println( humanPlayer.getLabel() + " hit on target '" + inputLetter + manualTarget.getVertical() + "'" );
 						}
 					}
 					else // MISS
@@ -226,16 +232,15 @@ public class Session
 						targetCell = new GridCell( " . " );
 						if( showStepsOutput )
 						{
-							out.println( humanPlayer.getLabel() + " miss on target '" + Positions.translateHorizontalNumberPositionToLetterLabel( manualTarget.getHorizontal() ) + manualTarget.getVertical() + "'" );
+							out.println( humanPlayer.getLabel() + " miss on target '" + inputLetter + manualTarget.getVertical() + "'" );
 						}
 					}
 					targetCell.setHit( true );
 					Grid grid = computerPlayer.getGrid(); // adjust target's grid
-					grid.setGridCell( targetCell, manualTarget.getVertical(), manualTarget.getHorizontal() );
-					computerPlayer.setGrid( grid ); // Update the target grid
+//					grid.setGridCell( targetCell, manualTarget.getHorizontal(), manualTarget.getVertical() );
+					grid.setGridCellAlternative( targetCell, manualTarget.getVertical(), manualTarget.getHorizontal() );
 
-					// Check the gridTarget
-					// Adjust points and statuses
+					computerPlayer.setGrid( grid ); // Update the target grid
 				}
 				humanPlayer.incrementTurns();
 			}
@@ -296,7 +301,7 @@ public class Session
 				}
 				targetCell.setHit( true );
 				Grid grid = humanPlayer.getGrid(); // adjust target's grid
-				grid.setGridCell( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
+				grid.setGridCellAlternative( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
 				humanPlayer.setGrid( grid ); // Update the target grid
 			}
 			computerPlayer.incrementTurns();
@@ -310,6 +315,13 @@ public class Session
 			{
 				gameIsRunning = false; // end the game
 			}
+			else // Show the grid for the next round
+			{
+				if( showGridEachRound )
+				{
+					displayBothPlayerGrids( humanPlayer.getLabel(), computerPlayer.getLabel() );
+				}
+			}
 		}
 
 		displayBothPlayerGrids( humanPlayer.getLabel(), computerPlayer.getLabel() );
@@ -321,7 +333,6 @@ public class Session
 			out.println( player1.getLabel() + " took " + player1.getTurns() + " turns." );
 			out.println( player2.getLabel() + " took " + player2.getTurns() + " turns." );
 		}
-
 	}
 
 

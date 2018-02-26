@@ -19,10 +19,6 @@ public class Grid
 	private Integer playableGrid = 0; // Playable area of grid
 	private Integer gridSizeInMemory = 0; // Actual area size of the grid in memory
 
-	// This allows players to choose more natural number values for human players, like A1 instead of A0.
-	private final Integer COORDINATE_TRANSLATION = Positions.getCoordinateTranslationConstant();
-	private final Integer REVERSE_COORDINATE_TRANSLATION = Positions.getReverseCoordinateTranslationConstant();
-
 	/**
 	 * Initialize the playable grid within memory, populated with blank gridcells, and set related class size variables.
 	 * If problems are encountered with unusual size grid specifications, method defaults to size 10x10.
@@ -374,9 +370,13 @@ public class Grid
 	 */
 	public GridCell getGridCell( int posVertical, int posHorizontal )
 	{
-//		return grid[ Positions.translateGridNumbersToMemoryGrid( posHorizontal ) ][ Positions.translateGridNumbersToMemoryGrid( posVertical ) ];
-		return grid[posVertical][posHorizontal];
 //		return grid[posHorizontal][posVertical];
+		return grid[posVertical][posHorizontal];
+	}
+
+	public GridCell getGridCellAlternate( int posVertical, int posHorizontal )
+	{
+		return grid[posVertical][posHorizontal];
 	}
 
 	private static String printGridEdge()
@@ -423,8 +423,20 @@ public class Grid
 	{
 		if( checkPlayableGridSingleCoordinate( posVertical ) && checkPlayableGridSingleCoordinate(posHorizontal ) )
 		{
-//		this.grid[ Positions.translateGridNumbersToMemoryGrid( posHorizontal ) ][ Positions.translateGridNumbersToMemoryGrid( posVertical ) ] = gridItem;
 			this.grid[posHorizontal][posVertical] = gridItem;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public boolean setGridCellAlternative( GridCell gridItem, int posVertical, int posHorizontal )
+	{
+		if( checkPlayableGridSingleCoordinate( posVertical ) && checkPlayableGridSingleCoordinate(posHorizontal ) )
+		{
+			this.grid[posVertical][posHorizontal] = gridItem;
 			return true;
 		}
 		else

@@ -1,26 +1,10 @@
 package game.battleship.grid;
 
-import static java.lang.Math.abs;
-
 /**
  * Position and Coordinate Translator utilities. Allows them to be referenced by Players, Sessions, and Grid all in one place.
  */
 public class Positions
 {
-
-	// This coordinate translators allow players to choose more natural number values for human players, like A1 instead of A0.
-	private static final Integer COORDINATE_TRANSLATION = -1;
-	public static Integer getCoordinateTranslationConstant()
-	{
-		return COORDINATE_TRANSLATION;
-	}
-
-	private static final Integer REVERSE_COORDINATE_TRANSLATION = abs(COORDINATE_TRANSLATION );
-	public static Integer getReverseCoordinateTranslationConstant()
-	{
-		return REVERSE_COORDINATE_TRANSLATION;
-	}
-
 	/**
 	 * If we wanted at another time these labels could be modified.
 	 */

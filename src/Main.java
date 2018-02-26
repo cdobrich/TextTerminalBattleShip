@@ -29,12 +29,11 @@ public class Main
 		System.out.println("3: Player vs Computer manual play");
 		System.out.println();
 
-		System.out.println("All that is left to do:" +
-			"A: take user input and run a game" +
-			"B: Toggle showing target output steps, which should just be another flag in the games");
+//		Session session = new Session(boardSize);
+//		session.startPlayerVsComputer( true, true, true );
 
-		Session session = new Session(boardSize);
-		session.startPlayerVsComputer( true, false );
+			Session session = new Session(boardSize);
+			session.startComputerVsComputer( true, false );
 
 //		try
 //		{
@@ -52,16 +51,18 @@ public class Main
 //			else if( inputline.contentEquals( "2" ))
 //			{
 //				Session session = new Session(boardSize);
-//				session.startComputerVsComputer( true, true );
+//				session.startComputerVsComputer( true, true, false );
 //			}
 //			else if( inputline.contentEquals( "3" ))
 //			{
-//				....
+//				Session session = new Session(boardSize);
+//				session.startPlayerVsComputer( true, true, false );
 //			}
 //		}
 //		catch( IOException e )
 //		{
 //			e.printStackTrace();
 //		}
+
 	}
 }

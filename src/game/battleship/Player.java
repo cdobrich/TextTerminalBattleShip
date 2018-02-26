@@ -96,7 +96,13 @@ public class Player
 
 	public GridCell getGridCell( int vertical, int horizontal )
 	{
-		return grid.getGridCell( horizontal, vertical );
+//		return grid.getGridCell( horizontal, vertical );
+		return grid.getGridCell( vertical, horizontal );
+	}
+
+	public GridCell getGridCellAlternate( int vertical, int horizontal )
+	{
+		return grid.getGridCellAlternate( vertical, horizontal );
 	}
 
 	/**
