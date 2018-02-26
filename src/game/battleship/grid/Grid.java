@@ -350,7 +350,7 @@ public class Grid
 	}
 
 	/**
-	 * Note that the item is added in the reversed coordinates reflect a more human interpretation of the game.battleship.grid system, instead of the computer numbered index one,.
+	 *
 	 * @param gridItem
 	 * @param posVertical
 	 * @param posHorizontal

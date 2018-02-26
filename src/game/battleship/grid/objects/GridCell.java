@@ -1,5 +1,8 @@
 package game.battleship.grid.objects;
 
+/**
+ * GridCell's do not know their coordinates. They only know their display contents and occupied status.
+ */
 public class GridCell
 {
 	private String contents;

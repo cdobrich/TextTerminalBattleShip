@@ -1,9 +1,12 @@
 package game.battleship;
 
+import game.battleship.grid.Grid;
 import game.battleship.grid.GridTarget;
 import game.battleship.grid.objects.GridCell;
 import game.battleship.grid.objects.Ship;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import static java.lang.System.out;
@@ -21,12 +24,15 @@ public class Session
 	Integer boardSize;
 	Integer numberOfShips;
 	final Integer numberOfDirections = 4;
-
+	ArrayList<Player> players = new ArrayList<>();
+	
 	public Session( int boardSize )
 	{
 		this.boardSize = boardSize;
-		player1 = new Player( boardSize );
-		player2 = new Player( boardSize );
+		player1 = new Player( boardSize,"Player");
+		players.add(player1);
+		player2 = new Player( boardSize,"Opponent");
+		players.add(player2);
 
 		// Defaulting to use the player1's numbers, but should both be the same
 		numberOfShips = player1.getNumberOfShips() - 1; // account for array indices sizing
@@ -36,28 +42,97 @@ public class Session
 	{
 		putShipPiecesOntoBoard(player1);
 		putShipPiecesOntoBoard(player2);
-		displayBothPlayerGrids( "Player1", "Player2" );
+		displayBothPlayerGrids( player1.getLabel(), player2.getLabel() );
 
 		// Play!
-		// Get a random location
-		GridTarget randomTarget = generateRandomTargetPosition();
+		boolean gameIsRunning = true;
+		Integer playerNumber = 0; // Always start off with user as first player to go
+		Player otherPlayer = players.get(1); // Always start off the opponent as other player
 
-		// Ask the target player what his grid has at that GridCell location
-		GridCell target = player1.getGridCell( randomTarget.getVertical(), randomTarget.getHorizontal() );
-		if( target.isOccupied() )
+		while( gameIsRunning )
 		{
-			out.println( "HIT!" );
+			while( playerNumber >= 0 && playerNumber < 2 ) // Go through each player
+			{
+				Player currentPlayer = players.get(playerNumber);
+				// toggle between the two players
+				// This is obviously a little limited but for the simple demo we will stick with only two players
+				if( playerNumber == 0 )
+				{
+					playerNumber = 1;
+				}
+				else
+				{
+					playerNumber = 0;
+				}
+
+				// Get a random location
+				GridTarget randomTarget = generateRandomTargetPosition();
+
+				// Ask the target player what his grid has at that GridCell location
+//				out.println(currentPlayer.getLabel() + " attacks " + randomTarget);
+
+
+				GridCell target = currentPlayer.getGridCell( randomTarget.getVertical(), randomTarget.getHorizontal() );
+				Grid grid = currentPlayer.getGrid();
+				if( target.isOccupied() )
+				{ // Note on their grid there was a hit
+//					out.println( "  HIT!" );
+
+					GridCell targetCell = new GridCell(" X ");
+					targetCell.setOccupied(false);
+					grid.setGridCell( targetCell, randomTarget.getVertical(), randomTarget.getHorizontal() );
+
+					// update other player's points
+					currentPlayer.decrementGamePoints();
+
+					// switch to using for loop, and use the i++ or i-- to toggle the other players values?
+					// Or key a previousPlayer variable? Do we want to make a pair of opponents?
+				}
+				else
+				{ // Note on their grid there was a miss
+//					out.println( "  MISS!" );
+
+					if( ! target.getContents().contentEquals(" X ") ) // Retain the X mark of the destroyed ship segments
+					{
+						grid.setGridCell(new GridCell(" . "), randomTarget.getVertical(), randomTarget.getHorizontal());
+					}
+				}
+				currentPlayer.setGrid( grid ); // Update the player grid
+
+				// check whether there is a victor
+				if( ! gameStatus() )
+				{
+					gameIsRunning = false; // end the game
+					break; // Leave this current inner loop
+				}
+				otherPlayer = currentPlayer; // Set other player for next round to the current player
+				currentPlayer = players.get(playerNumber); // Set to next player
+			}
 		}
-		else
+
+		displayBothPlayerGrids( player1.getLabel(), player2.getLabel() );
+		Player winner = players.get( declareWinner() );
+		out.println(winner.getLabel() + " is the winner!");
+		out.println("Winner points remaining: " + winner.getGamePoints());
+
+	}
+
+	/**
+	 * @return the number index of player (in the list of players) who won with more points than zero. Or return -1 if there is no victor yet.
+	 */
+	public Integer declareWinner()
+	{
+		if( ! gameStatus() ) // Is the game over
 		{
-			out.println( "MISS!" );
+			for (int i = 0; i < players.size(); i++)
+			{
+				if( players.get(i).getGamePoints() > 0 ) // Who had points remaining
+				{
+					return i;
+				}
+			}
 		}
-
-		// hit the board gridcell at that target
-		// update board display, and ship points if necessary
-		// update each players total points
-		// check whether there is a victor
-
+		return -1;
 	}
 
 	/**
@@ -89,6 +164,22 @@ public class Session
 		out.println( label2 );
 	}
 
+	/**
+	 * @return true if game is still running. False if game is over.
+	 */
+	public boolean gameStatus()
+	{
+		Iterator<Player> playersIterator = players.iterator();
+		while( playersIterator.hasNext() ) // Go through each player
+		{
+			Player currentPlayer = playersIterator.next();
+			if( currentPlayer.getGamePoints() <= 0 )
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 
 	private void putShipPiecesOntoBoard( Player player )
 	{

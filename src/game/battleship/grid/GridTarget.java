@@ -23,4 +23,9 @@ public class GridTarget
 	{
 		return vertical;
 	}
+
+	@Override
+	public String toString() {
+		return " " + Positions.translateHorizontalToLetterLabel(horizontal) + vertical;
+	}
 }

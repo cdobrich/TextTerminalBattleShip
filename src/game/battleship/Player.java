@@ -24,6 +24,8 @@ public class Player
 {
 	private Grid grid;
 	private Integer gamePoints = 0;
+	private String label;
+
 
 	// Length of the array is the number of pieces
 	// Contents of each address index is the size of each corresponding piece
@@ -32,9 +34,10 @@ public class Player
 	private ArrayList<Ship> myShips = new ArrayList<>(  );
 
 
-	public Player(Integer boardSize)
+	public Player(Integer boardSize, String label)
 	{
 		grid = new Grid( boardSize );
+		this.label = label;
 
 		// Add up all the game points at the start of the game
 		for( int i = 0; i < myShipLengths.length; i++ )
@@ -47,6 +50,11 @@ public class Player
 		{
 			myShips.add( new Ship( -1, -1, myShipLengths[i], "Z") );
 		}
+	}
+
+	public void decrementGamePoints( )
+	{
+		gamePoints--;
 	}
 
 	public void displayGrid()
@@ -62,6 +70,14 @@ public class Player
 	public Integer getGamePoints()
 	{
 		return gamePoints;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public Grid getGrid() {
+		return grid;
 	}
 
 	public GridCell getGridCell( Integer vertical, Integer horizontal )
@@ -109,10 +125,12 @@ public class Player
 		return status;
 	}
 
-	public void setGamePoints( Integer gamePoints )
-	{
-		this.gamePoints = gamePoints;
+	public void setGrid(Grid grid) {
+		this.grid = grid;
 	}
 
+	public void setLabel(String label) {
+		this.label = label;
+	}
 
 }
