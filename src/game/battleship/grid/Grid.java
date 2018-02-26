@@ -376,11 +376,6 @@ public class Grid
 		return grid[posVertical][posHorizontal];
 	}
 
-	public GridCell getGridCellAlternate( int posVertical, int posHorizontal )
-	{
-		return grid[posVertical][posHorizontal];
-	}
-
 	private static String printGridEdge()
 	{
 		return "|";
