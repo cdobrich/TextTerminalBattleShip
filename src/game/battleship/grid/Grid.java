@@ -6,9 +6,8 @@ import game.battleship.grid.objects.Ship;
 import static java.lang.System.out;
 
 /**
- * The actual grid size in memory is 0 to gridSize inclusively. However the playable board dimensions are from 1 to playableGrid inclusively.
- *
- * Note: There are some errors if you make the grid size below
+ * Architecture Design comment(s):
+ *    The actual grid size in memory is 0 to gridSize inclusively. However the playable board dimensions are from 1 to playableGrid inclusively.
  */
 
 public class Grid

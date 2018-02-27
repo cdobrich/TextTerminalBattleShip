@@ -5,13 +5,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- *
  * DEVELOPER'S NOTES
  *
- * When I limit the computer to only selecting areas not previously targeted, it usually wins. This behavior makes sense.
- * If I allow one computer to play without striking previous targets, and the other be allowed to hit previous targets, the one allowed to strike previous targets usually loses. This behavior also makes sense.
- * This does not matter if the player or the computer goes first. (I have randomized who starts first.)
- * I have also confirmed each player takes the same number of turns as the winner, plus or minus 1.
+ * COMPUTER BEHAVIOR COMMENTS:
+ *    When I limit the computer to only selecting areas not previously targeted, it usually wins. This behavior makes sense.
+ *    If I allow one computer to play without striking previous targets, and the other be allowed to hit previous targets, the one allowed to strike previous targets usually loses. This behavior also makes sense.
+ *    This does not matter if the player or the computer goes first. (I have randomized who starts first.)
+ *    I have also confirmed each player takes the same number of turns as the winner, plus or minus 1.
+ *
+ * ABOUT THE GRAPHICS:
+ *    While these are not part of the requests, they were useful in diagnosing and confirming correct code behavior during development.
+ *    Also I figured it wouldn't hurt to impress a little with the effort.
  *
  */
 public class Main

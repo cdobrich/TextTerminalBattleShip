@@ -20,7 +20,7 @@ import static java.lang.System.out;
  *
  * Architecture comments:
  *    The Session object knows more rules, such as allowing or disallowing striking previously attacked areas.
- *    The input parsing is not exhaustive. This simple demo assumes the user will generally input proper entries.
+ *    The user input parsing is not exhaustive. This simple demo assumes the user will generally input proper entries.
  */
 public class Session
 {

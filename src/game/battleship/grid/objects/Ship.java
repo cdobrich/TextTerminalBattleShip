@@ -47,30 +47,18 @@ public class Ship
 		this( positionVertical, Positions.translateLetterToHorizontal(positionHorizontal), length, direction);
 	}
 
-	public String getContents()
-	{
-		return contents;
-	}
+	public String getContents() {	return contents; }
 
 	public String getDirection()
 	{
 		return direction;
 	}
 
-	public Integer getLength()
-	{
-		return length;
-	}
+	public Integer getLength() { return length; }
 
-	public Integer getPositionHorizontal()
-	{
-		return positionHorizontal;
-	}
+	public Integer getPositionHorizontal() {	return positionHorizontal;	}
 
-	public Integer getPositionVertical()
-	{
-		return positionVertical;
-	}
+	public Integer getPositionVertical() { return positionVertical;	}
 
 	@Override
 	public String toString()
