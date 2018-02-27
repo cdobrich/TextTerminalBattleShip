@@ -30,6 +30,10 @@ public class Session
 	final Integer numberOfDirections = 4;
 	ArrayList<Player> players = new ArrayList<>();
 
+	/**
+	 * Initialize the board and set player names.
+	 * @param boardSize Desired game board size.
+	 */
 	public Session( int boardSize )
 	{
 		this.boardSize = boardSize;
@@ -47,7 +51,6 @@ public class Session
 	 * Play a game of Computer vs Computer.
 	 * @param disallowStrikingPreviousMisses Flag to set whether to disallow Computer to strike previously targeted miss locations
 	 * @param showStepsOutput Display the play-by-play step information output to STDOUT.
-	 * @param showGridEachRound Display the grid each time a round as been completed.
 	 */
 	public void startComputerVsComputer( boolean disallowStrikingPreviousMisses, boolean showStepsOutput )
 	{
