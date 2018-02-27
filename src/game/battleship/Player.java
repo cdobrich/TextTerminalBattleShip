@@ -94,9 +94,23 @@ public class Player
 		return grid;
 	}
 
+	/**
+	 *
+	 * @param vertical
+	 * @param horizontal
+	 * @return the target GridCell object if coordinates are valid, or null if not.
+	 */
 	public GridCell getGridCell( int vertical, int horizontal )
 	{
-		return grid.getGridCell( vertical, horizontal );
+		if( grid.checkPlayableGridSingleCoordinate( vertical ) && grid.checkPlayableGridSingleCoordinate( horizontal ) )
+		{
+			return grid.getGridCell( vertical, horizontal );
+		}
+		else
+		{
+			return null;
+		}
+
 	}
 
 	/**

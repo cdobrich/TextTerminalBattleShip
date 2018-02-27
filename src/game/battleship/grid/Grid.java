@@ -369,7 +369,7 @@ public class Grid
 	 *
 	 * @param posHorizontal
 	 * @param posVertical
-	 * @return
+	 * @return GridCell at that location
 	 */
 	public GridCell getGridCell( int posVertical, int posHorizontal )
 	{

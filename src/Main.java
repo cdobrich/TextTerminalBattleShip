@@ -24,45 +24,45 @@ public class Main
 		System.out.println();
 		System.out.println("Select your preferred play options:");
 		System.out.println();
-		System.out.println("1: Computer vs computer quick play with limited output. This is the requested 'debug mode' feature.");
-		System.out.println("2: Computer vs computer quick play with full output");
-		System.out.println("3: Player vs Computer manual play");
+		System.out.println("1: Player vs Computer manual play");
+		System.out.println("2: Computer vs computer quick play with limited output. This is the requested 'debug mode' feature.");
+		System.out.println("3: Computer vs computer quick play with full output");
 		System.out.println();
 
 //		Session session = new Session(boardSize);
 //		session.startPlayerVsComputer( true, true, true );
 
-			Session session = new Session(boardSize);
-			session.startComputerVsComputer( true, true );
+//			Session session = new Session(boardSize);
+//			session.startComputerVsComputer( true, true );
 
-//		try
-//		{
-//			System.out.println();
-//			System.out.print("  Choice: ");
-//
-//			BufferedReader is = new BufferedReader(new InputStreamReader(System.in));
-//			String inputline = is.readLine();
-//
-//			if( inputline.contentEquals( "1" ))
-//			{
-//				Session session = new Session(boardSize);
-//				session.startComputerVsComputer( true, false );
-//			}
-//			else if( inputline.contentEquals( "2" ))
-//			{
-//				Session session = new Session(boardSize);
-//				session.startComputerVsComputer( true, true, false );
-//			}
-//			else if( inputline.contentEquals( "3" ))
-//			{
-//				Session session = new Session(boardSize);
-//				session.startPlayerVsComputer( true, true, false );
-//			}
-//		}
-//		catch( IOException e )
-//		{
-//			e.printStackTrace();
-//		}
+		try
+		{
+			System.out.println();
+			System.out.print("  Choice: ");
+
+			BufferedReader is = new BufferedReader(new InputStreamReader(System.in));
+			String inputline = is.readLine();
+
+			if( inputline.contentEquals( "1" ))
+			{ //  Player vs Computer manual play
+				Session session = new Session(boardSize);
+				session.startPlayerVsComputer( true, true, false );
+			}
+			else if( inputline.contentEquals( "2" ))
+			{ // Computer vs computer quick play with limited output
+				Session session = new Session(boardSize);
+				session.startComputerVsComputer( true, false );
+			}
+			else if( inputline.contentEquals( "3" ))
+			{ // Computer vs computer quick play with full output
+				Session session = new Session(boardSize);
+				session.startComputerVsComputer( true, true );
+			}
+		}
+		catch( IOException e )
+		{
+			e.printStackTrace();
+		}
 
 	}
 }

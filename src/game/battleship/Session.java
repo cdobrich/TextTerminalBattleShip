@@ -18,7 +18,9 @@ import static java.lang.System.out;
 /**
  * A game session consists of two players. Whenever a player's points drops to zero, the other player wins and the game is over.
  *
- * Architecture comments: The Session object knows more rules, such as allowing or disallowing striking previously attacked areas.
+ * Architecture comments:
+ *    The Session object knows more rules, such as allowing or disallowing striking previously attacked areas.
+ *    The input parsing is not exhaustive. This simple demo assumes the user will generally input proper entries.
  */
 public class Session
 {
@@ -42,8 +44,10 @@ public class Session
 	}
 
 	/**
-	 *
+	 * Play a game of Computer vs Computer.
 	 * @param disallowStrikingPreviousMisses Flag to set whether to disallow Computer to strike previously targeted miss locations
+	 * @param showStepsOutput Display the play-by-play step information output to STDOUT.
+	 * @param showGridEachRound Display the grid each time a round as been completed.
 	 */
 	public void startComputerVsComputer( boolean disallowStrikingPreviousMisses, boolean showStepsOutput )
 	{
@@ -145,8 +149,10 @@ public class Session
 	}
 
 	/**
-	 *
+	 * Play a game of Player vs the Computer, allowing for manual target input by the player.
 	 * @param disallowStrikingPreviousMisses Flag to set whether to disallow Computer to strike previously targeted miss locations
+	 * @param showStepsOutput Display the play-by-play step information output to STDOUT.
+	 * @param showGridEachRound Display the grid each time a round as been completed.
 	 */
 	public void startPlayerVsComputer( boolean disallowStrikingPreviousMisses, boolean showStepsOutput, boolean showGridEachRound )
 	{
@@ -165,6 +171,7 @@ public class Session
 		putShipPiecesOntoBoard( computerPlayer );
 		displayBothPlayerGrids( humanPlayer.getLabel(), computerPlayer.getLabel() );
 
+		boolean repeat = false;
 		boolean gameIsRunning = true;
 		while( gameIsRunning )
 		{
@@ -180,9 +187,35 @@ public class Session
 				BufferedReader is = new BufferedReader( new InputStreamReader( System.in ) );
 				String inputline = is.readLine();
 
+				//=====================================================================
+				// Check if the input was sufficient
+				//=====================================================================
+
+				if( inputline.length() <= 1 || inputline.length() > 3)
+				{
+					System.out.println("Invalid input. Please try again.");
+					continue;
+				}
+
 				// Simple regex splitting, putting the answer in the first index of each String array
 				String[] posVerticalArray = inputline.substring( 1 ).split( "[a-jA-J]" );
 				String[] posHorizontalLetterInputArray = inputline.split( "[1-9]+" );
+
+				if( posHorizontalLetterInputArray.length == 0 )
+				{
+					System.out.println("Invalid input. No letter row was found. Please try again.");
+					continue;
+				}
+
+				if( posVerticalArray.length == 0 )
+				{
+					System.out.println("Invalid input. No number row was found. Please try again.");
+					continue;
+				}
+
+				//=====================================================================
+				// Process the input
+				//=====================================================================
 
 				Character inputLetter = new Character( posHorizontalLetterInputArray[0].charAt( 0 ) );
 
@@ -191,9 +224,15 @@ public class Session
 				Integer posHorizontal = Positions.translateLetterToHorizontal( inputLetter );
 
 				GridTarget manualTarget = new GridTarget( new Integer( posVerticalArray[0] ), posHorizontal );
-				out.println( "Targeting" + manualTarget );
 
 				GridCell manualStrike = computerPlayer.getGridCell( manualTarget.getVertical(), manualTarget.getHorizontal() );
+
+				// Check coordinate validity
+				if( manualStrike == null )
+				{
+					System.out.println("Invalid coordinates: " + manualTarget.getVertical() + "," + manualTarget.getHorizontal() + ". Please try again.");
+					continue;
+				}
 
 				if( manualStrike.isHit() ) // Check if already hit.
 				{
@@ -221,7 +260,6 @@ public class Session
 					}
 					targetCell.setHit( true );
 					Grid grid = computerPlayer.getGrid(); // adjust target's grid
-//					grid.setGridCell( targetCell, manualTarget.getHorizontal(), manualTarget.getVertical() );
 					grid.setGridCell( targetCell, manualTarget.getVertical(), manualTarget.getHorizontal() );
 
 					computerPlayer.setGrid( grid ); // Update the target grid
@@ -321,6 +359,7 @@ public class Session
 
 
 	/**
+	 * Determine who was victories by virtue of having had any points remaining.
 	 * @return the number index of player (in the list of players) who won with more points than zero. Or return -1 if there is no victor yet.
 	 */
 	public Integer declareWinner()
@@ -370,6 +409,7 @@ public class Session
 	}
 
 	/**
+	 * Check if the game is still running.
 	 * @return true if game is still running. False if game is over.
 	 */
 	public boolean gameRunning()
@@ -386,6 +426,10 @@ public class Session
 		return true;
 	}
 
+	/**
+	 * Place all the player's pieces onto the board automatically at random allowed locations.
+	 * @param player The player whose pieces who are to be placed upon their own board.
+	 */
 	public void putShipPiecesOntoBoard( Player player )
 	{
 		// We never need to reach zero since we store the ships corresponding to their length value, not memory location value
@@ -413,9 +457,9 @@ public class Session
 
 
 	/**
-	 *
+	 * Generate a ship at a randomized location within allowed grid locations, but not ensuring its full length is allowed within its directions, nor that the space it occupies are free from collisions.
 	 * @param length A parameter merely passed along in the ship construction process. Not used in the position generations.
-	 * @return
+	 * @return The generated random position ship.
 	 */
 	public Ship generateShipAtRandomPosition( int length )
 	{
@@ -448,10 +492,12 @@ public class Session
 		return new Ship(vertical, horizontal, length, direction);
 	}
 
+	/**
+	 * Generate a randomized location within allowed grid locations,
+ 	 * @return A randomized location within allowed grid locations,
+	 */
 	public GridTarget generateRandomTargetPosition( )
 	{
-		// Generate random number between zero and board size
-		// Generate a pseudo-random, uniformly distributed int value between 0 (inclusive) and the specified value (exclusive)
 		Random rn = new Random();
 
 		// Always add +1 OUTISDE the randomization call to avoid the trouble with including zero in the generation
