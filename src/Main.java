@@ -29,12 +29,6 @@ public class Main
 		System.out.println("3: Computer vs computer quick play with full output");
 		System.out.println();
 
-//		Session session = new Session(boardSize);
-//		session.startPlayerVsComputer( true, true, true );
-
-//			Session session = new Session(boardSize);
-//			session.startComputerVsComputer( true, true );
-
 		try
 		{
 			System.out.println();

@@ -13,7 +13,6 @@ import static java.lang.System.out;
 
 public class Grid
 {
-
 	private GridCell[][] grid;
 	final char[] horizontalLabels = Positions.getHorizontalLabels();
 	private Integer playableGrid = 0; // Playable area of grid
@@ -171,11 +170,11 @@ public class Grid
 	}
 
 	/**
-	 * Checking if actual coordinate position is acceptable, meaning within boundaries and not occupied by a ship section already.
+	 * Check if coordinate position is acceptable, meaning within boundaries and not occupied by a ship section already.
 	 *
-	 * @return true if acceptable, false if not.
 	 * @param posVertical
 	 * @param posHorizontal
+	 * @return true if position is acceptable, false if not.
 	 */
 	public boolean checkPlayableGridPosition( int posVertical, int posHorizontal )
 	{
@@ -287,6 +286,7 @@ public class Grid
 	 * Vertical labels are from the row numbers, corresponding to the Y-axis.
 	 *
 	 * Grid limit size is 26, due to alphabet size.
+	 * @return A String representing the display of the player's current board game.
 	 */
 	public String displayGridString()
 	{
@@ -412,9 +412,11 @@ public class Grid
 	}
 
 	/**
+	 * Set the input grid item at the input location coordinates, checking if the grid boundary allows it.
 	 * @param gridItem
 	 * @param posVertical
 	 * @param posHorizontal
+	 * @return true if successfully placed the grid item at target location. False if location not allowed.
 	 */
 	public boolean setGridCell( GridCell gridItem, int posVertical, int posHorizontal )
 	{
