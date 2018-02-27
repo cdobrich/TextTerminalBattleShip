@@ -9,14 +9,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Each player's ship pieces are unique and there are no duplicates of the same size.
- *
- Players consist of their following:
- 1 game.battleship.grid
- a number of ships (default pieces size)
- points remaining (added together from all nonDamaged ships values)
+ Each player's ship pieces are unique and there are no duplicates of the same size.
 
-	Should the player contain the ships, or the player?
+ Players consist of their following:
+ A single game.battleship.grid
+ A number of ships (default pieces size)
+ Their points remaining (added together from all nonDamaged ships values)
 
  The game.battleship.grid contains GridCells, but the concept of a ship is a higher one than just the GridCell's.
 
@@ -27,19 +25,12 @@ public class Player
 	private Grid grid;
 	private Integer gamePoints = 0;
 
-	public int getTurns()
-	{
-		return turns;
-	}
+	public int getTurns() { return turns;	}
 
-	public void incrementTurns( )
-	{
-		turns++;
-	}
+	public void incrementTurns( ) {	turns++;	}
 
 	private int turns = 0;
 	private String label;
-
 
 	// Length of the array is the number of pieces
 	// Contents of each address index is the size of each corresponding piece
@@ -48,6 +39,11 @@ public class Player
 	private ArrayList<Ship> myShips = new ArrayList<>(  );
 
 
+	/**
+	 * Create a player's game board. Add up the player's current points and place his ship pieces into inventory but not onto the board yet..
+	 * @param boardSize Size of the game board grid.
+	 * @param label Name of the player
+	 */
 	public Player(Integer boardSize, String label)
 	{
 		grid = new Grid( boardSize );
@@ -66,36 +62,20 @@ public class Player
 		}
 	}
 
-	public void decrementGamePoints( )
-	{
-		gamePoints--;
-	}
+	public void decrementGamePoints( ) { gamePoints--; }
 
-	public void displayGrid()
-	{
-		grid.displayGrid();
-	}
+	public void displayGrid() {	grid.displayGrid();	}
 
-	public String displayGridString()
-	{
-		return grid.displayGridString();
-	}
+	public String displayGridString() {	return grid.displayGridString(); }
 
-	public int getGamePoints()
-	{
-		return gamePoints;
-	}
+	public int getGamePoints() { return gamePoints;	}
 
-	public String getLabel() {
-		return label;
-	}
+	public String getLabel() { return label; }
 
-	public Grid getGrid() {
-		return grid;
-	}
+	public Grid getGrid() { return grid; }
 
 	/**
-	 *
+	 * Retrieve a gridcell from the player's game board at the target coordinates.
 	 * @param vertical
 	 * @param horizontal
 	 * @return the target GridCell object if coordinates are valid, or null if not.
@@ -110,7 +90,6 @@ public class Player
 		{
 			return null;
 		}
-
 	}
 
 	/**
@@ -166,8 +145,6 @@ public class Player
 		return status;
 	}
 
-	public void setGrid(Grid grid) {
-		this.grid = grid;
-	}
+	public void setGrid(Grid grid) { this.grid = grid;	}
 
 }
