@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
  *    I have also confirmed each player takes the same number of turns as the winner, plus or minus 1.
  *
  * ABOUT THE GRAPHICS:
- *    While these are not part of the requests, they were useful in diagnosing and confirming correct code behavior during development.
+ *    While these are not part of the requirements, I created/added basic graphics because they were useful in diagnosing and confirming correct code behavior during development.
  *    Also I figured it wouldn't hurt to impress a little with the effort.
  *
  */
@@ -48,11 +48,13 @@ public class Main
 			}
 			else if( inputline.contentEquals( "2" ))
 			{ // Computer vs computer quick play with limited output
+				System.out.println("Ships are represented by '@' lines, hits are represented by 'X' marks, and misses are represented by '.' marks");
 				Session session = new Session(boardSize);
 				session.startComputerVsComputer( true, false );
 			}
 			else if( inputline.contentEquals( "3" ))
 			{ // Computer vs computer quick play with full output
+				System.out.println("Ships are represented by '@' lines, hits are represented by 'X' marks, and misses are represented by '.' marks");
 				Session session = new Session(boardSize);
 				session.startComputerVsComputer( true, true );
 			}
