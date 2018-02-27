@@ -437,15 +437,11 @@ class GridTest
 		ship = new Ship(posVertical, posHoriztonal, length, direction);
 		assertTrue( player.putShip( ship ) );
 
-		System.out.println(player.displayGridString());
-
 		posHoriztonal = 3;
 		posVertical = 3;
 		length = 3;
 		ship = new Ship(posVertical, posHoriztonal, length, direction);
 		assertTrue( player.putShip( ship ) );
-
-		System.out.println(player.displayGridString());
 
 		posHoriztonal = 4;
 		posVertical = 4;
@@ -528,8 +524,8 @@ class GridTest
 		ship = new Ship(1, 1, 1, "N" );
 		assertTrue( grid.addShip( ship ) );
 
-		System.out.println("Placed " + ship);
-		System.out.println( grid.displayGridString() );
+//		System.out.println("Placed " + ship);
+//		System.out.println( grid.displayGridString() );
 
 		actual = grid.getGridCell( 1, 1 );
 		assertEquals( ship.getContents(), actual.getContents() );
