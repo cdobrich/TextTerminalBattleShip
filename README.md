@@ -1,6 +1,6 @@
 # README #
 
-A very simple console version of Battleship, written by Clifton Dobrich. As source code is copyright Clifton Dobrich. Please do not copy or modify this code without permission and also please do give notice and credit.
+A very simple console version of Battleship, written by Clifton Dobrich. All source code is copyright Clifton Dobrich. Please do not copy or modify this code without permission and also please do give notice and credit.
 
 ### What is this repository for? ###
 
