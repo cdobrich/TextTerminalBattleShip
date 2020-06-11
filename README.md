@@ -6,7 +6,7 @@ A very simple console version of Battleship, written by Clifton Dobrich. All sou
 
 * This is my own implementation of the game Battleship, with simple limitations and very simple custom console text graphics. I made this as a demonstration of my coding abilities for a job interview over the course of several hours.
 * Version 1.0: Complete
-* Limitations: The board game size may range between 10x10 and 26x26, inclusively.
+* Limitations: The board game size may range between 10x10 and 26x26, inclusively. This is set as a hardcoded variable in the 'src/Main.java' file, but could be made configurable. Changing the value to any desired range with limits and recompiling will demonstrate its ability to adjust.
 
 ### Build Software Version Compatibility ###
 
