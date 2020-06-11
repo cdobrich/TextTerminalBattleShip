@@ -5,7 +5,7 @@ A very simple console version of Battleship, written by Clifton Dobrich. All sou
 ### What is this repository for? ###
 
 * This is my own implementation of the game Battleship, with simple limitations and very simple custom console text graphics. I made this as a demonstration of my coding abilities for a job interview over the course of several hours.
-* Version 1.0: Complete with 
+* Version 1.0: Complete
 * Limitations: The board game size may range between 10x10 and 26x26, inclusively.
 
 ### How do I get set up? ###
